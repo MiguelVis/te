@@ -1,0 +1,63 @@
+# ---------------------------
+# MESCC & TOOL CHAIN BINARIES
+# ---------------------------
+cpm.exe
+cpm2.exe
+cpm_player.exe
+cc.com
+cc.COM
+CC.COM
+ccopt.com
+ccopt.COM
+CCOPT.COM
+zsm.com
+ZSM.COM
+hextocom.com
+hextocom.COM
+HEXTOCOM.COM
+link.com
+LINK.COM
+prntosym.com
+prntosym.COM
+PRNTOSYM.COM
+zmac.exe
+
+# ---------------
+# MESCC LIBRARIES
+# ---------------
+alloc.h
+atexit.h
+bsearch.h
+clock.h
+conio.h
+cpm.h
+ctype.h
+fileio.h
+fprintf.h
+mem.h
+mescc.h
+printf.h
+qsort.h
+rand.h
+redir.h
+setjmp.h
+sprintf.h
+stdbool.h
+string.h
+xprintf.h
+z80.h
+
+# ------------------
+# INTERMEDIATE FILES
+# ------------------
+*.HEX
+*.ZSM
+*.PRN
+
+# -----------------------
+# PROJECT FILES & FOLDERS
+# -----------------------
+backup/
+TODO.TXT
+TE.BKP
+TE.CF
