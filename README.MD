@@ -1,7 +1,7 @@
 te
 ==
 
-v1.30 / 04 Mar 2020
+v1.30 / 04 Mar 2020 for CP/M
 
 (c) 2015-2020 Miguel Garcia / FloppySoftware
 
