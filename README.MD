@@ -6,8 +6,6 @@ v1.30 / 04 Mar 2020 for CP/M
 (c) 2015-2020 Miguel Garcia / FloppySoftware
 
 www.floppysoftware.es
-cpm-connections.blogspot.com
-floppysoftware@gmail.com
 
 **NOTE**: This project has been extracted from my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
 
