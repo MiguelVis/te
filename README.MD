@@ -21,7 +21,7 @@ It's screen oriented, and can be easily adapted to a lot of computers.
 It's written in the C language, and there are ports for various
 operating systems: CP/M, DOS, Windows and GNU/Linux.
 
-![te image](images/cpm-te.jpg "te image")
+![te image](http://www.floppysoftware.es/images/cpm-te.jpg "te image")
 
 Command line
 ------------
