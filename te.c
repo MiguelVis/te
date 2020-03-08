@@ -4,7 +4,7 @@
 
 	Main module.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -66,6 +66,7 @@
 	26 Dec 2019 : Now K_INTRO is K_CR, LoopIntro() is LoopCr().
 	01 Mar 2020 : Added fe_forced.
 	02 Mar 2020 : Added automatic indentation.
+	08 Mar 2020 : Support for CRT_LONG.
 
 	Notes:
 
@@ -217,7 +218,11 @@ int argc, argv[];
 	int i;
 
 	/* Setup some globals */
+#if CRT_LONG	
 	box_rows = CRT_ROWS - 4;
+#else
+	box_rows = CRT_ROWS - 2;
+#endif
 
 #if OPT_NUM
 	ln_max = CRT_COLS - MAX_DIGITS - 2;

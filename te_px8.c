@@ -1,6 +1,6 @@
-/*	te_mur.c
+/*	te_px8.c
 
-	Text editor -- version for the K. Murakami's CP/M emulator.
+	Text editor -- version for the Epson PX-8 "Geneva".
 
 	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
 
@@ -20,35 +20,27 @@
 
 	Usage:
 
-	te_mur [filename]
+	te_px8 [filename]
 
 	Compilation:
 
-	cc te_mur
-	ccopt te_mur
-	zsm te_mur
-	hextocom te_mur
+	cc te_px8
+	ccopt te_px8
+	zsm te_px8
+	hextocom te_px8
 
 	Changes:
 
-	03 May 2015 : 1st version.
-	02 Jun 2016 : Minor changes.
-	20 Feb 2018 : Find, find next, macro & go to line # keys.
-	30 Dec 2018 : Refactorized i/o functions.
-	15 Jan 2019 : Added CrtReverse().
-	18 Jan 2019 : Added K_DELETE.
-	23 Jan 2019 : Modified a lot for key bindings support.
-	29 Jan 2019 : Added K_CLRCLP.
-	24 Dec 2019 : Added OPT_NUM.
-	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
+	16 Feb 2020 : 1st version.
+	08 Mar 2020 : Alternative to reverse video. First public release.
 
 	Notes:
 
-	For CPM.EXE / CP/M-80 program EXEcutor for Win32 v0.4 from K. Murakami.
+	The Epson PX-8 "Geneva" runs CP/M 2.2 with a physical LCD screen of 8x80.
 
-	It emulates a 25x80 VT-100.
+	References:
 
-	It translates the PC scan codes to single characters.
+	https://fjkraan.home.xs4all.nl/comp/px8
 */
 
 /* Options
@@ -66,14 +58,17 @@
 /* Definitions
    -----------
 */
-#define CRT_NAME "K. Murakami's CP/M emulator"
+#define CRT_NAME "Epson PX-8 \"Geneva\""
 
-#define CRT_ROWS 25       /* CRT rows */
-#define CRT_COLS 80       /* CRT columns */
+#define CRT_ROWS    8   /* CRT rows */
+#define CRT_COLS    80  /* CRT columns */
+#define CRT_CAN_REV 0   /* Reverse video is not available */
+#define CRT_LONG    0   /* CRT has few lines */
 
-#define RULER_TAB    '!'  /* Ruler: Tab stop character - ie: ! */
-#define RULER_CHR    '.'  /* Ruler: Character - ie: . */
-#define SYS_LINE_SEP '-'  /* System line separator character - ie: - */
+#define RULER_TAB    143 //'!'  /* Ruler: Tab stop character - ie: ! */
+#define RULER_CHR    144 //'.'  /* Ruler: Character - ie: . */
+#define SYS_LINE_SEP 133 //'-'  /* System line separator character - ie: - */
+#define BLOCK_CHR    '*'        /* Character to mark lines as selected */
 
 /* Include main code
    -----------------
@@ -88,24 +83,24 @@ CrtSetup()
 {
 	CrtSetupEx();
 
-	SetKey(K_UP,        CTL_E, '\0', NULL);
-	SetKey(K_DOWN,      CTL_X, '\0', NULL);
-	SetKey(K_LEFT,      CTL_S, '\0', NULL);
-	SetKey(K_RIGHT,     CTL_D, '\0', NULL);
+	SetKey(K_UP,        30,    '\0', NULL);
+	SetKey(K_DOWN,      31,    '\0', NULL);
+	SetKey(K_LEFT,      29,    '\0', NULL);
+	SetKey(K_RIGHT,     28,    '\0', NULL);
 	SetKey(K_BEGIN,     CTL_N, '\0', NULL);
 	SetKey(K_END,       CTL_A, '\0', NULL);
 	SetKey(K_TOP,       CTL_P, '\0', NULL);
 	SetKey(K_BOTTOM,    CTL_F, '\0', NULL);
 	SetKey(K_PGUP,      CTL_R, '\0', NULL);
-	SetKey(K_PGDOWN,    CTL_C, '\0', NULL);	
+	SetKey(K_PGDOWN,    CTL_D, '\0', NULL);
 	SetKey(K_TAB,       CTL_I, '\0', "TAB");
-	SetKey(K_CR,        CTL_M, '\0', "ENTER");
+	SetKey(K_CR,        CTL_M, '\0', "RETURN");
 	SetKey(K_ESC,       ESC,   '\0', "ESC");
 	SetKey(K_RDEL,      DEL,   '\0', "DEL");
 	SetKey(K_LDEL,      CTL_H, '\0', "BS");
-	SetKey(K_CUT,       CTL_U, '\0', NULL);
-	SetKey(K_COPY,      CTL_O, '\0', NULL);
-	SetKey(K_PASTE,     CTL_W, '\0', NULL);
+	SetKey(K_CUT,       CTL_X, '\0', NULL);
+	SetKey(K_COPY,      CTL_C, '\0', NULL);
+	SetKey(K_PASTE,     CTL_V, '\0', NULL);
 	SetKey(K_DELETE,    CTL_G, '\0', NULL);
 	SetKey(K_CLRCLP,    CTL_T, '\0', NULL);
 #if OPT_FIND
@@ -115,7 +110,7 @@ CrtSetup()
 #if OPT_GOTO
 	SetKey(K_GOTO,      CTL_J, '\0', NULL);
 #endif
-#if OPT_LWORD	
+#if OPT_LWORD
 	/*SetKey(K_LWORD,     '\0', '\0', NULL);*/
 #endif
 #if OPT_RWORD
@@ -153,6 +148,8 @@ BiosConout: jp 0
 */
 CrtReset()
 {
+	// Display mode 0: 40 lines screen 0, 8 lines screen 2
+	CrtOut(27); CrtOut(208); CrtOut(2); CrtOut(24); CrtOut(24);
 }
 
 /* Output character to the CRT
@@ -196,8 +193,7 @@ CrtIn:
 */
 CrtClear()
 {
-	CrtOut(27); putstr("[1;1H"); /* Cursor to 0,0 */
-	CrtOut(27); putstr("[2J");   /* Clear CRT */
+	CrtOut(12);
 }
 
 /* Locate the cursor (HOME is 0,0)
@@ -207,9 +203,7 @@ CrtClear()
 CrtLocate(row, col)
 int row, col;
 {
-	CrtOut(27); CrtOut('[');
-	putint("%d", row + 1); CrtOut(';');
-	putint("%d", col + 1); CrtOut('H');
+	CrtOut(27); CrtOut('='); CrtOut(row + 32); CrtOut(col + 32);
 }
 
 /* Erase line and cursor to row,0
@@ -227,16 +221,18 @@ int row;
 */
 CrtClearEol()
 {
-	CrtOut(27); putstr("[K");
+	CrtOut(27); CrtOut('T');
 }
 
 /* Turn on / off reverse video
    ---------------------------
 */
+/*
 CrtReverse(on)
 int on;
 {
 	CrtOut(27); CrtOut('['); CrtOut(on ? '7' : '0'); CrtOut('m');
 }
+*/
 
 

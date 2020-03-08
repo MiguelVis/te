@@ -4,7 +4,7 @@
 
 	Edit line.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the

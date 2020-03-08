@@ -1,7 +1,7 @@
 te
 ==
 
-v1.30 / 04 Mar 2020 for CP/M
+v1.40 / 08 Mar 2020 for CP/M
 
 (c) 2015-2020 Miguel Garcia / FloppySoftware
 
@@ -305,6 +305,7 @@ Current CP/M adaptations are:
 - te_ws100: Generic 25x80 VT100 and WordStar keys.
 - te_kp:    Kaypro II, 4 and 10 (24x80 ADM-3A like terminal),
   contributed by Stephen S. Mitchell (thanks!).
+- te_px8:   Epson PX-8 "Geneva".
 
 Adaptations for other OS are (they are distributed apart):
 - Windows 32 bit (25x80), compiled with Pelles C

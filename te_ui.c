@@ -4,7 +4,7 @@
 
 	User interface.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -31,6 +31,7 @@
 	24 Dec 2019 : Modified some text messages. SysLineKey() is now SysLineCont(). Added support for numbered lines.
 	26 Dec 2019 : Now K_INTRO is K_CR. Add SysLineWait(), SysLineBack().
 	28 Feb 2020 : Minor changes.
+	08 Mar 2020 : Support for CRT_LONG in menu, about and (ejem) help options.
 */
 
 /* Read character from keyboard
@@ -124,6 +125,7 @@ Layout()
 	CrtLocate(PS_ROW, PS_COL_MAX); putint("%02d", 1 + ln_max);
 
 	/* Ruler */
+#if CRT_LONG
 #if OPT_NUM	
 	CrtLocate(BOX_ROW - 1, MAX_DIGITS + 1);
 	
@@ -151,12 +153,8 @@ Layout()
 	/* System line separator */
 	CrtLocate(CRT_ROWS - 2, 0);
 
-	/*
-	for(i = CRT_COLS; i; --i)
-		putchr(SYS_LINE_SEP);
-	*/
-
 	putchrx(SYS_LINE_SEP, CRT_COLS);
+#endif
 }
 
 /* Print filename
@@ -395,23 +393,27 @@ int row, sel;
 	for(i = row; i < box_rows; ++i) {
 		if(line >= blk_start) {
 			if(line <= blk_end) {
-
+#if CRT_CAN_REV
 #if OPT_NUM
 				CrtLocate(BOX_ROW + i, MAX_DIGITS + 1);
 				CrtClearEol();
 #else			
 				CrtClearLine(BOX_ROW + i);
 #endif
-
 				if(sel) {
 					CrtReverse(1);
 				}
 
-				putstr(lp_arr[line]); putchr(' ');
+				putstr(lp_arr[line]);
+				putchr(' ');		
 
 				if(sel) {
+			
 					CrtReverse(0);
 				}
+#else
+				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(sel ? BLOCK_CHR : ' ');
+#endif	
 			}
 			else {
 				break;
@@ -467,7 +469,11 @@ int row, line;
 			if(blk) {
 				if(line >= blk_start) {
 					if(line <= blk_end) {
+#if CRT_CAN_REV						
 						CrtReverse((sel = 1));
+#else
+						sel = 1;
+#endif
 					}
 				}
 			}
@@ -479,9 +485,15 @@ int row, line;
 #if OPT_BLOCK
 
 			if(sel) {
+#if CRT_CAN_REV				
 				putchr(' ');
 
 				CrtReverse((sel = 0));
+#else
+				sel = 0;
+			
+				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(BLOCK_CHR);	
+#endif
 			}
 
 #endif
@@ -521,6 +533,7 @@ Menu()
 
 			CenterText(row++, "OPTIONS");
 			row++;
+#if CRT_LONG			
 			CenterText(row++, "New");
 			CenterText(row++, "Open");
 			CenterText(row++, "Save");
@@ -528,7 +541,10 @@ Menu()
 			CenterText(row++, "Help");
 			CenterText(row++, "aBout te");
 			CenterText(row  , "eXit te");
-
+#else
+			CenterText(row++, "New   Open      Save     Save As");
+			CenterText(row++, "Help  aBout te  eXit te         ");
+#endif
 			menu = 0;
 		}
 
@@ -663,6 +679,8 @@ MenuHelp()
 
 	putstr("HELP for te & "); putstr(CRT_NAME); putln(":\n");
 
+#if CRT_LONG
+
 	for(i = 0; help_items[i] != -1; ++i) {
 
 		// 12345678 123 12345678 (21 characters)
@@ -703,6 +721,12 @@ MenuHelp()
 			putchr('\n');
 		}
 	}
+	
+#else
+	
+	putstr("Sorry, no help is available in short format yet.");
+	
+#endif
 
 	SysLineBack(NULL);
 }
@@ -714,6 +738,7 @@ MenuAbout()
 {
 	int row;
 
+#if CRT_LONG
 	row = BOX_ROW + 1;
 
 	ClearBox();
@@ -730,6 +755,18 @@ MenuAbout()
 	CenterText(row++, "www.floppysoftware.es");
 	CenterText(row++, "cpm-connections.blogspot.com");
 	CenterText(row  , "floppysoftware@gmail.com");
+#else
+	row = BOX_ROW;
+
+	ClearBox();
+	
+	CenterText(row++, "te - Text Editor");
+	CenterText(row++, VERSION);
+	CenterText(row++, "Configured for");
+	CenterText(row++, CRT_NAME);
+	CenterText(row++, COPYRIGHT);
+	CenterText(row++, "www.floppysoftware.es");
+#endif
 
 	SysLineBack(NULL);
 }

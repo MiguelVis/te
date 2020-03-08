@@ -4,7 +4,7 @@
 
 	Definitions.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -48,6 +48,7 @@
 	01 Mar 2020 : Added OPT_CLANG. Set default options.
 	02 Mar 2020 : Added OPT_INDENT.
 	04 Mar 2020 : v1.30
+	08 Mar 2020 : Added CRT_CAN_REV.
 
 	Notes:
 
@@ -57,7 +58,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.30 / 04 Mar 2020 for CP/M"
+#define VERSION "v1.40 / 08 Mar 2020 for CP/M"
 
 /* Copyright
    ---------
@@ -103,6 +104,17 @@
 #define OPT_INDENT 1  /* Automatic indentation */
 #endif
 
+/* CRT defs.
+   ---------
+*/
+#ifndef CRT_CAN_REV
+#define CRT_CAN_REV 1
+#endif
+
+#ifndef CRT_LONG
+#define CRT_LONG 1
+#endif
+
 /* More defs.
    ----------
 */
@@ -128,7 +140,11 @@
 #define PS_COL_NOW (CRT_COLS -  2)  /* Line length - position in row */
 #define PS_COL_MAX (CRT_COLS -  9)  /* Max. line length - position in row */
 
+#if CRT_LONG
 #define BOX_ROW    2        /* Editor box position */
+#else
+#define BOX_ROW    1
+#endif
 
 #define getchr     GetKey   /* Get a character from the keyboard */
 #define putchr     CrtOut   /* Print a character on screen */
