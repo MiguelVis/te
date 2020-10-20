@@ -38,7 +38,9 @@ te_pcw           - To start an empty document.
 te_pcw notes.txt - To edit the document 'notes.txt'.
 ```
 
-You could rename the adaptation of your choice to simply `te`.
+You should rename the adaptation of your choice to simply `te`, because
+some CCP implementations (including the standard from CP/M), do not like
+the character `_` in filenames.
 
 
 The screen layout
@@ -197,14 +199,18 @@ If the text editor is compiled with the auto-completion option enabled,
 the input of some characters will cause the automatic input of some other.
 
 Very useful for programmers:
--[ --> ]
--{ --> }
--( --> )
--" --> "
--' --> '
+```
+[ --> ]
+{ --> }
+( --> )
+" --> "
+' --> '
+```
 
 Also, for C language style comments:
--/* --> */
+```
+/* --> */
+```
 
 
 Auto-indentation
@@ -297,15 +303,17 @@ If not, don't worry, you can start from a similar adaptation.
 See the source code files for more information.
 
 Current CP/M adaptations are:
-- te_pcw:   Amstrad PCW and CP/M Plus (31x90 VT52 like terminal).
-- te_cpc3:  Amstrad CPC and CP/M Plus (24x80 VT52 like terminal).
-- te_spec:  Spectrum +3 and CP/M Plus (23x51 VT52 like terminal).
-- te_mur:   K. Murakami's CP/M emulator (25x80 VT100/Ansi).
-- te_tak:   Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
-- te_ws100: Generic 25x80 VT100 and WordStar keys.
-- te_kp:    Kaypro II, 4 and 10 (24x80 ADM-3A like terminal),
-  contributed by Stephen S. Mitchell (thanks!).
-- te_px8:   Epson PX-8 "Geneva".
+- `te_pcw  `: Amstrad PCW and CP/M Plus (31x90 VT52 like terminal).
+- `te_cpc3 `: Amstrad CPC and CP/M Plus (24x80 VT52 like terminal).
+- `te_spec `: Spectrum +3 and CP/M Plus (23x51 VT52 like terminal).
+- `te_mur  `: K. Murakami's CP/M emulator (25x80 VT100/Ansi).
+- `te_tak  `: Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
+- `te_ws100`: Generic 25x80 VT100 and WordStar keys.
+- `te_kp   `: Kaypro II, 4 and 10 (24x80 ADM-3A like terminal),
+              contributed by Stephen S. Mitchell (thanks!).
+- `te_px8  `: Epson PX-8 "Geneva".
+- `te_ansi `: Generic 25x80 ANSI terminal, including keyboard escape
+              sequences (translated).
 
 Adaptations for other OS are (they are distributed apart):
 - Windows 32 bit (25x80), compiled with Pelles C
@@ -313,6 +321,12 @@ Adaptations for other OS are (they are distributed apart):
 - DOS (25x80), compiled with Turbo C, and
   its 'conio.h' library.
 - GNU/Linux (24x80), compiled with GCC and ncurses.
+
+
+Configuration
+-------------
+
+A configuration program is on the works, but it's not ready yet.
 
 
 License
