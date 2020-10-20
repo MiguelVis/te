@@ -303,15 +303,15 @@ If not, don't worry, you can start from a similar adaptation.
 See the source code files for more information.
 
 Current CP/M adaptations are:
-- `te_pcw  `: Amstrad PCW and CP/M Plus (31x90 VT52 like terminal).
-- `te_cpc3 `: Amstrad CPC and CP/M Plus (24x80 VT52 like terminal).
-- `te_spec `: Spectrum +3 and CP/M Plus (23x51 VT52 like terminal).
-- `te_mur  `: K. Murakami's CP/M emulator (25x80 VT100/Ansi).
-- `te_tak  `: Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
+- `te_pcw`  : Amstrad PCW and CP/M Plus (31x90 VT52 like terminal).
+- `te_cpc3` : Amstrad CPC and CP/M Plus (24x80 VT52 like terminal).
+- `te_spec` : Spectrum +3 and CP/M Plus (23x51 VT52 like terminal).
+- `te_mur`  : K. Murakami's CP/M emulator (25x80 VT100/Ansi).
+- `te_tak`  : Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
 - `te_ws100`: Generic 25x80 VT100 and WordStar keys.
-- `te_kp   `: Kaypro II, 4 and 10 (24x80 ADM-3A like terminal), contributed by Stephen S. Mitchell (thanks!).
-- `te_px8  `: Epson PX-8 "Geneva".
-- `te_ansi `: Generic 25x80 ANSI terminal, including (translated) keyboard escape sequences.
+- `te_kp`   : Kaypro II, 4 and 10 (24x80 ADM-3A like terminal), contributed by Stephen S. Mitchell (thanks!).
+- `te_px8`  : Epson PX-8 "Geneva".
+- `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard escape sequences.
 
 Adaptations for other OS are (they are distributed apart):
 - Windows 32 bit (25x80), compiled with Pelles C
