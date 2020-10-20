@@ -309,11 +309,9 @@ Current CP/M adaptations are:
 - `te_mur  `: K. Murakami's CP/M emulator (25x80 VT100/Ansi).
 - `te_tak  `: Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
 - `te_ws100`: Generic 25x80 VT100 and WordStar keys.
-- `te_kp   `: Kaypro II, 4 and 10 (24x80 ADM-3A like terminal),
-              contributed by Stephen S. Mitchell (thanks!).
+- `te_kp   `: Kaypro II, 4 and 10 (24x80 ADM-3A like terminal), contributed by Stephen S. Mitchell (thanks!).
 - `te_px8  `: Epson PX-8 "Geneva".
-- `te_ansi `: Generic 25x80 ANSI terminal, including keyboard escape
-              sequences (translated).
+- `te_ansi `: Generic 25x80 ANSI terminal, including (translated) keyboard escape sequences.
 
 Adaptations for other OS are (they are distributed apart):
 - Windows 32 bit (25x80), compiled with Pelles C
