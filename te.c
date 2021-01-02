@@ -67,6 +67,11 @@
 	01 Mar 2020 : Added fe_forced.
 	02 Mar 2020 : Added automatic indentation.
 	08 Mar 2020 : Support for CRT_LONG.
+	22 Dec 2020 : Add default filetype to macro filenames.
+	30 Dec 2020 : Solved bug in LoopCr() - bad column position after line break.
+	              Solved bug in LoopDelete() - did nothing if no selection, must delete current line.
+				  Added LoopBlkEx(), LoopDeleteEx().
+				  Added automatic list.
 
 	Notes:
 
@@ -587,6 +592,8 @@ LoopCr()
 
 #if OPT_INDENT
 	int i, k;
+	
+	k = 0;
 #endif
 
 	if(box_shc) {
@@ -619,15 +626,21 @@ LoopCr()
 			for(i = 0; ln_dat[i] == ' '; ++i)
 				;
 
-			if(i) {
+#if OPT_LIST
+			if(strchr(LIST_CHRS, ln_dat[i]) && ln_dat[i + 1] == ' ') {
+				i += 2;
+			}
+#endif
+
+			if(i) {		
 				k = i;
-
+				
 				strcpy(ln_dat + i, lp_arr[lp_cur]);
-
+/*
 				while(i--) {
 					ln_dat[i] = ' ';
 				}
-
+*/
 				ModifyLine(lp_cur, ln_dat);
 			}
 		}
@@ -644,7 +657,7 @@ LoopCr()
 		}
 
 #if OPT_INDENT
-		box_shc = (k ? k : 0);
+		box_shc = k;
 #else
 		box_shc = 0;
 #endif
@@ -685,7 +698,7 @@ LoopBlkEnd()
 	blk_end = lp_cur;
 
 	if(blk_start != -1) {
-		RefreshBlock(0, 1);
+		RefreshBlock(0, 1);  // FIXME -- optimize
 
 		blk_count = blk_end - blk_start + 1;
 	}
@@ -706,6 +719,14 @@ LoopBlkUnset()
 	blk_count = 0;
 }
 
+LoopBlkEx()
+{
+	if(!blk_count) {
+		blk_start = blk_end = lp_cur;
+		blk_count = 1;
+	}
+}
+
 #endif
 
 /* Copy line
@@ -716,6 +737,8 @@ LoopCopy()
 
 #if OPT_BLOCK
 
+	LoopBlkEx();
+	
 	if(LoopCopyEx()) {
 		LoopBlkUnset();
 	}
@@ -733,11 +756,6 @@ LoopCopy()
 LoopCopyEx()
 {
 	int i;
-
-	if(!blk_count) {
-		blk_start = blk_end = lp_cur;
-		blk_count = 1;
-	}
 
 	LoopClrClp();
 
@@ -771,7 +789,33 @@ LoopDelete()
 
 #if OPT_BLOCK
 
-	if(blk_count) {
+	LoopBlkEx();
+	LoopDeleteEx();
+	
+#else
+
+	if(lp_cur != lp_now - 1) {
+			DeleteLine(lp_cur);
+	}
+	else {
+		ClearLine(lp_cur);
+	}
+
+	Refresh(box_shr, lp_cur);
+
+	box_shc = 0;
+
+	lp_chg = 1;
+
+#endif
+
+}
+
+#if OPT_BLOCK
+
+LoopDeleteEx()
+{
+	//if(blk_count) {
 		LoopGo(blk_start);
 
 		while(blk_count--) {
@@ -793,26 +837,10 @@ LoopDelete()
 		box_shc = 0;
 
 		lp_chg = 1;
-	}
-
-#else
-
-	if(lp_cur != lp_now - 1) {
-			DeleteLine(lp_cur);
-	}
-	else {
-		ClearLine(lp_cur);
-	}
-
-	Refresh(box_shr, lp_cur);
-
-	box_shc = 0;
-
-	lp_chg = 1;
+	//}
+}
 
 #endif
-
-}
 
 /* Copy and delete line
    --------------------
@@ -822,8 +850,10 @@ LoopCut()
 
 #if OPT_BLOCK
 
+	LoopBlkEx();
+	
 	if(LoopCopyEx()) {
-		LoopDelete();
+		LoopDeleteEx();
 	}
 
 #else
@@ -1138,11 +1168,22 @@ int line;
 LoopMacro()
 {
 	char fn[FILENAME_MAX];
+	int len_type;
 
 	fn[0] = '\0';
 
-	if(SysLineStr("Macro filename", fn, FILENAME_MAX - 1))
+	if(SysLineStr("Macro", fn, FILENAME_MAX - 1))
 	{
+		len_type = (strchr(fn, '.') ? 0 : strlen(MAC_FTYPE));
+
+		if(len_type)
+		{
+			if(strlen(fn) + len_type < FILENAME_MAX)
+			{
+				strcat(fn, MAC_FTYPE);
+			}
+		}
+	
 		MacroRunFile(fn);
 	}
 }
