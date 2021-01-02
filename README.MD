@@ -7,7 +7,8 @@ v1.40 / 08 Mar 2020 for CP/M
 
 www.floppysoftware.es
 
-**NOTE**: This project has been extracted from my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
+**NOTE**: This project has been extracted from
+my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
 
 Introduction
 ------------
@@ -35,7 +36,7 @@ Examples:
 
 ```
 te_pcw           - To start an empty document.
-te_pcw notes.txt - To edit the document 'notes.txt'.
+te_pcw todo.txt - To edit the document 'todo.txt'.
 ```
 
 You should rename the adaptation of your choice to simply `te`, because
@@ -46,10 +47,40 @@ the character `_` in filenames.
 The screen layout
 -----------------
 
+Depending of the `te` adaptation, you could see a layout similar to:
+
+```
+te: TODO.TXT                   --- | Lin:0012/0029/0512 Col:08/76 Len:07
+    !.......!.......!.......!.......!.......!.......!.......!.......!...
+  1|This is my TO-DO list for today:
+  2|  - Wake up.
+  3|  - Make coffee.
+  4|  - Have a shower.
+  5|  - Get dressed.
+  6|  - Go work and:
+  7|    1. Revise email.
+  8|    2. Call Peter.
+  9|    3. Meet the boss.
+ 10|    4. Plan tomorrow.
+ 11|  - Have lunch with Sarah.
+ 12|  - ...
+ 13|
+ 14|
+ 15|
+ 16|
+ 17|
+ 18|
+ 19|
+ 20|
+ 21|
+------------------------------------------------------------------------
+ESC = menu
+```
+
 On the first screen line, you will see something like:
 
 ```
-te: NOTES.TXT - The file name of the document your are editing.
+te: TODO.TXT - The file name of the document your are editing.
 ```
 
 And something like:
@@ -64,7 +95,7 @@ The very first field, can have one of the following values:
 --- Means the clipboard is empty.
 CLP Means the clipboard has data.
 ```
- 
+
 The numbers following 'Lin' are:
 
 ```
@@ -96,7 +127,7 @@ You can enter to the menu, by pressing the `ESCAPE` key, as shown
 in the messages line:
 
 ```
-Press [ESC] to show the menu.
+ESC = menu
 ```
 
 Note that the exact name of your `ESCAPE` key may differ, depending of
@@ -118,8 +149,8 @@ You can select an option by pressing the character in uppercase.
 
 To leave the menu, you must press `ESCAPE`.
 
-If you select one of the options `New`, `Open` or `eXit`, and there are any
-changes that are not saved yet, te will ask you for confirmation
+If you select one of the options `New`, `Open` or `eXit`, and there are
+any changes that are not saved yet, te will ask you for confirmation
 before proceed (both `INTRO` or Y mean YES).
 
 If you start a new document, the `Save` option will redirect to you to
@@ -133,7 +164,7 @@ could see something like this:
 
 ```
 Up       ^E           | Down     ^X           | Tab      ^I  TAB
-Left     ^S           | Right    ^D           | Intro    ^M  or ^N
+Left     ^S           | Right    ^D           | NewLine  ^M  or ^N
 Begin    ^QS          | End      ^QD          | Escape   ^[  ESC
 Top      ^QR          | Bottom   ^QC          | Macro    ^QM
 PgUp     ^C           | PgDown   ^R           |
@@ -144,6 +175,7 @@ Cut      ^Y           | Copy     ^O           | Paste    ^W
 Delete   ^KY          | ClrClip  ^T           |
 Find     ^QF          | F.Next   ^L           | GoLine   ^J
 ```
+
 
 The clipboard
 -------------
@@ -158,8 +190,8 @@ anymore, to free some memory.
 Key bindings
 ------------
 
-As you can see in the help screen of example, there are some key bindings
-to perform actions when you are editing the file.
+As you can see in the help screen of example, there are some key
+bindings to perform actions when you are editing the file.
 
 The exact keys you must press to do an action, depend on the adaptation
 you are running, but the meanings are the same:
@@ -181,7 +213,7 @@ you are running, but the meanings are the same:
 - ClrClip: to clear the clipboard data.
 - Macro: to run a macro.
 - Tab: to insert spaces as indentation.
-- Intro: to insert a break or empty line.
+- NewLine: to insert a break or empty line. Same as Cr, Enter or Return.
 - Esc: to exit the menu or cancel an action.
 
 Take into account that some actions could not be available in all te
@@ -219,6 +251,35 @@ Auto-indentation
 The text editor supports automatic indentation of lines, according
 to the indentation of the previous one.
 
+The indentation is done by inserting the same number of spaces of
+the previous line - ie:
+
+```
+  This paragraph is
+  indented, according to
+  the first line.
+    More indentation
+    here.
+```
+
+
+Lists
+-----
+
+The text editor supports automatic lists, when the first non blank
+character of the previous line is one of: - and *.
+
+As automatic indentation is supported, automatic multi level lists
+are possible - ie:
+
+```
+- Item #1
+- Item #2
+  * Item #2a
+  * Item #2b
+- Item #3
+```
+
 
 Macros
 ------
@@ -233,23 +294,32 @@ your own C functions.
 
 Each time you want to run a macro, just press the corresponding key
 for the Macro action, enter the filename you choose when you saved it
-to disk, and press the key for the Intro action. That's all.
+to disk, and press the key for the NewLine action. That's all.
+
+The default filetype for macro files is ".M".
+
+The filetype is only required when it's different. So, if you have
+saved a macro file as `JOIN.M`, you could just enter `JOIN`:
+
+```
+JOIN.M     you could enter JOIN.M or just JOIN
+JOIN.MAC   you must enter JOIN.MAC
+```
 
 There are some special symbols you can use in your macros:
 
 ```
-{up} {down} {left} {right}
-{begin} {end}
-{top} {bottom}
-{intro}
-{tab}
-{cut} {copy} {paste} {delete}
-{clrclip}
-{blkstart} {blkend}
-{filename}
+{up} {down} {left} {right}     move the cursor one character at a time
+{begin} {end}                  go to the begin / end of the current line
+{top} {bottom}                 go to the begin / end of the current file
+{cr}                           insert a break or empty line
+{tab}                          insert spaces as indentation
+{ldel} {rdel}                  delete the character at the left / right
+{cut} {copy} {paste} {delete}  operation over a line or block of lines
+{clrclip}                      clear the clipboard data
+{blkstart} {blkend}            mark the start / end of a block of lines
+{filename}                     insert the current filename
 ```
-
-As you can see, they are self explanatory.
 
 The symbol names are case insensitive - ie: `{ClrClip}` and `{clrclip}`
 are equivalents.
@@ -260,22 +330,31 @@ Additionally, you can repeat a symbol as in:
 {up:12}
 ```
 
-Take into account that line endings in the macro are not translated to Intro
-actions. Use `{intro}` for that.
+Take into account that line endings in the macro are not translated
+to NewLine actions. Use `{cr}` for that.
 
-If you need to insert the `{` or `}` characters in the text of the macro, just
-write `\{` and `\}`.
+If you need to insert the `{` or `}` characters in the text of the
+macro, just write `\{` and `\}`.
 
-For example, a macro to insert a banner at the top of the document, could
-be written as:
+For example, a macro to insert a banner at the top of the document,
+could be written as:
 
 ```
-{top}{intro}{up}
-=============={intro}
-FloppySoftware{intro}
-=============={intro}
+{top}{cr}{up}
+=============={cr}
+FloppySoftware{cr}
+=============={cr}
 ```
 
+Some macro files are included as examples:
+
+```
+HEADER.M     Above example.
+CFILE.M      C language file documentation block for GDOC.
+CFUN.M       C language function documentation block for GDOC.
+JOINUP.M     Join current line with the previous one.
+JOINDOWN.M   Join current line with the next one.
+```
 
 File backup
 -----------
@@ -309,9 +388,11 @@ Current CP/M adaptations are:
 - `te_mur`  : K. Murakami's CP/M emulator (25x80 VT100/Ansi).
 - `te_tak`  : Takeda Toshiya's CP/M emulator (25x80 VT100/Ansi).
 - `te_ws100`: Generic 25x80 VT100 and WordStar keys.
-- `te_kp`   : Kaypro II, 4 and 10 (24x80 ADM-3A like terminal), contributed by Stephen S. Mitchell (thanks!).
+- `te_kp`   : Kaypro II, 4 and 10 (24x80 ADM-3A like terminal),
+              contributed by Stephen S. Mitchell (thanks!).
 - `te_px8`  : Epson PX-8 "Geneva".
-- `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard escape sequences.
+- `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard
+              escape sequences.
 
 Adaptations for other OS are (they are distributed apart):
 - Windows 32 bit (25x80), compiled with Pelles C
