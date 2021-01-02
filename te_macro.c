@@ -191,6 +191,8 @@ MacroGet()
 				else if(MatchStr(sym, "bottom"))   ch = K_BOTTOM;
 				else if(MatchStr(sym, "cr"))       ch = K_CR;
 				else if(MatchStr(sym, "tab"))      ch = K_TAB;
+				else if(MatchStr(sym, "rdel"))     ch = K_RDEL;
+				else if(MatchStr(sym, "ldel"))     ch = K_LDEL;
 				else if(MatchStr(sym, "cut"))      ch = K_CUT;
 				else if(MatchStr(sym, "copy"))     ch = K_COPY;
 				else if(MatchStr(sym, "paste"))    ch = K_PASTE;

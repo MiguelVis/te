@@ -32,6 +32,7 @@
 	26 Dec 2019 : Now K_INTRO is K_CR. Add SysLineWait(), SysLineBack().
 	28 Feb 2020 : Minor changes.
 	08 Mar 2020 : Support for CRT_LONG in menu, about and (ejem) help options.
+	31 Dec 2020 : Use NUM_SEP instead of space to separate line numbers from text.
 */
 
 /* Read character from keyboard
@@ -104,7 +105,7 @@ char *format; int value;
 Layout()
 {
 	int i, k;
-	
+
 #if OPT_NUM
 	int w;
 #endif
@@ -126,11 +127,11 @@ Layout()
 
 	/* Ruler */
 #if CRT_LONG
-#if OPT_NUM	
+#if OPT_NUM
 	CrtLocate(BOX_ROW - 1, MAX_DIGITS + 1);
-	
+
 	w = CRT_COLS - MAX_DIGITS - 1;
-	
+
 	for(i = k = 0; i < w; ++i)
 #else
 	CrtLocate(BOX_ROW - 1, 0);
@@ -196,9 +197,9 @@ SysLineWait(s, cr, esc)
 char *s, *cr, *esc;
 {
 	int ch;
-	
+
 	SysLine(s);
-	
+
 	if(s)
 		putstr(" (");
 
@@ -206,33 +207,33 @@ char *s, *cr, *esc;
 	{
 		putstr(GetKeyName(K_CR)); putstr(" = "); putstr(cr); putstr(", ");
 	}
-	
+
 	if(esc)
 	{
 		putstr(GetKeyName(K_ESC)); putstr(" = "); putstr(esc);
 	}
-	
+
 	if(s)
 		putchr(')');
-	
+
 	putstr(": ");
-	
+
 	for(;;)
 	{
 		ch = getchr();
-		
+
 		if(cr && ch == K_CR)
 			break;
-		
+
 		if(esc && ch == K_ESC)
-			break;		
+			break;
 	}
-	
+
 	SysLine(NULL);
 
 	return (ch == K_CR);
 }
-   
+
 
 /* Print message on system line and wait
    for ESC key press to CONTINUE
@@ -397,7 +398,7 @@ int row, sel;
 #if OPT_NUM
 				CrtLocate(BOX_ROW + i, MAX_DIGITS + 1);
 				CrtClearEol();
-#else			
+#else
 				CrtClearLine(BOX_ROW + i);
 #endif
 				if(sel) {
@@ -405,15 +406,15 @@ int row, sel;
 				}
 
 				putstr(lp_arr[line]);
-				putchr(' ');		
+				putchr(' ');
 
 				if(sel) {
-			
+
 					CrtReverse(0);
 				}
 #else
 				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(sel ? BLOCK_CHR : ' ');
-#endif	
+#endif
 			}
 			else {
 				break;
@@ -434,7 +435,7 @@ Refresh(row, line)
 int row, line;
 {
 	int i;
-	
+
 #if OPT_NUM
 	char *format;
 #endif
@@ -461,15 +462,15 @@ int row, line;
 
 #if OPT_NUM
 			putint(format, line + 1);
-			putchr(' ');
+			putchr(NUM_SEP);
 #endif
-	
+
 #if OPT_BLOCK
 
 			if(blk) {
 				if(line >= blk_start) {
 					if(line <= blk_end) {
-#if CRT_CAN_REV						
+#if CRT_CAN_REV
 						CrtReverse((sel = 1));
 #else
 						sel = 1;
@@ -485,14 +486,14 @@ int row, line;
 #if OPT_BLOCK
 
 			if(sel) {
-#if CRT_CAN_REV				
+#if CRT_CAN_REV
 				putchr(' ');
 
 				CrtReverse((sel = 0));
 #else
 				sel = 0;
-			
-				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(BLOCK_CHR);	
+
+				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(BLOCK_CHR);
 #endif
 			}
 
@@ -533,7 +534,7 @@ Menu()
 
 			CenterText(row++, "OPTIONS");
 			row++;
-#if CRT_LONG			
+#if CRT_LONG
 			CenterText(row++, "New");
 			CenterText(row++, "Open");
 			CenterText(row++, "Save");
@@ -721,11 +722,11 @@ MenuHelp()
 			putchr('\n');
 		}
 	}
-	
+
 #else
-	
+
 	putstr("Sorry, no help is available in short format yet.");
-	
+
 #endif
 
 	SysLineBack(NULL);
@@ -759,7 +760,7 @@ MenuAbout()
 	row = BOX_ROW;
 
 	ClearBox();
-	
+
 	CenterText(row++, "te - Text Editor");
 	CenterText(row++, VERSION);
 	CenterText(row++, "Configured for");

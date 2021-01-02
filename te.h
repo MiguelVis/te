@@ -48,7 +48,9 @@
 	01 Mar 2020 : Added OPT_CLANG. Set default options.
 	02 Mar 2020 : Added OPT_INDENT.
 	04 Mar 2020 : v1.30
-	08 Mar 2020 : Added CRT_CAN_REV.
+	08 Mar 2020 : v1.40 : Added CRT_CAN_REV.
+	22 Dec 2020 : Added MAC_FTYPE.
+	31 Dec 2020 : Added OPT_LIST, LIST_CHRS, NUM_SEP. Added default values for layout characters.
 
 	Notes:
 
@@ -104,6 +106,10 @@
 #define OPT_INDENT 1  /* Automatic indentation */
 #endif
 
+#ifndef OPT_LIST
+#define OPT_LIST   1  /* Automatic list -- need OPT_INDENT */
+#endif
+
 /* CRT defs.
    ---------
 */
@@ -113,6 +119,40 @@
 
 #ifndef CRT_LONG
 #define CRT_LONG 1
+#endif
+
+/* Layout characters
+   -----------------
+*/
+#ifndef RULER_TAB
+#define RULER_TAB    '!'  /* Ruler: Tab stop character */
+#endif
+
+#ifndef RULER_CHR
+#define RULER_CHR    '.'  /* Ruler: Character */
+#endif
+
+#ifndef SYS_LINE_SEP
+#define SYS_LINE_SEP '-'  /* System line separator character */
+#endif
+
+#if CRT_CAN_REV
+#else
+#ifndef BLOCK_CHR
+#define BLOCK_CHR    '*'  /* Character to mark lines as selected, when CRT_CAN_REV == 0 */
+#endif
+#endif
+
+#if OPT_NUM
+#ifndef NUM_SEP
+#define NUM_SEP      '|'  /* Character to separate line numbers from text, when OPT_NUM == 1 */
+#endif
+#endif
+
+#if OPT_LIST
+#ifndef LIST_CHRS
+#define LIST_CHRS   "-*" /* First characters for lists */
+#endif
 #endif
 
 /* More defs.
@@ -159,6 +199,7 @@
 #define MAC_SEP     ':'  /* Separator between symbol names and # of repeats */
 #define MAC_ESCAPE  '\\' /* For escaped characters in macros */
 #define MAC_SYM_MAX  9   /* Max. length of macro symbol name in characters + '\0' */
+#define MAC_FTYPE   ".m" /* Default filetype for macro files */
 
 #endif
 
