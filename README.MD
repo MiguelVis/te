@@ -1,9 +1,9 @@
 te
 ==
 
-v1.40 / 08 Mar 2020 for CP/M
+v1.50 / 18 Jan 2021 for CP/M
 
-(c) 2015-2020 Miguel Garcia / FloppySoftware
+(c) 2015-2021 Miguel Garcia / FloppySoftware
 
 www.floppysoftware.es
 
@@ -405,8 +405,99 @@ Adaptations for other OS are (they are distributed apart):
 Configuration
 -------------
 
-A configuration program is on the works, but it's not ready yet.
+The `TECF` configuration tool is supplied in order to adjust
+some `TE` generic options to your taste, if needed (its use
+is totally optional):
 
+```
+TECF v1.00 / 18 Jan 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+
+TE configuration tool.
+
+Usage:
+        tecf action arguments...
+
+Actions:
+        patch COM file from CF file:
+                patch [[filename[.COM]] [filename[.CF]]]
+        dump CF values from COM file:
+                dump [filename[.COM]] [> filename.CF]
+
+        Default value for "filename" is "TE".
+```
+
+You can configure TE by using the `patch` action - ie:
+
+```
+tecf patch te.com myconf.cf
+```
+
+The standard file types (`COM`, `CF`) and filename (`TE`) are optionals,
+so you could patch `te.com` with `te.cf` just with the command:
+
+```
+tecf patch
+```
+
+Take into account that the disk has to be enough space for a temporary
+file with the exact size as TE.
+
+You can see the current configuration of TE by using
+the `dump` action - ie:
+
+```
+tecf dump
+```
+
+To save the configuration in a file just add a redirection (a `tecf`
+feature thanks to `MESCC`):
+
+```
+tecf dump > myconf.cf
+```
+
+The standard file type (`COM`) and filename (`TE`) are optionals.
+
+A `CF` configuration file is just a text file with some key / value
+pairs, in a very similar way of `INI` and `conf` files in other
+systems.
+
+Just a few rules:
+- comments start with the `#` character.
+- empty lines are ignored.
+- strings can be surrounded by the `"` character.
+
+See my `CF` and `CF READER` projects for more information.
+
+The current supported options are the following:
+
+```
+# TE configuration
+
+# How many lines can edit: 256..8192
+editor.maxLines = 256
+
+# How many columns (spaces) are a TAB: 1..16
+editor.tabSize = 4
+
+# Show line numbers: true / false
+editor.lineNumbers = true
+
+# C language type completion: [], {}, (), "", '', /**/
+editor.c_language = true
+
+# Automatically indent a new line as the previous one
+editor.autoIndent = true
+
+# Automatically start a list when the first non blank
+# character in a line is one of "listBullets"
+editor.autoList = true
+editor.listBullets = "-*>"
+```
+
+In the future it will be possible to configure some platform / machine
+dependent values (ie - screen size), key bindings, memory macros,
+etc.
 
 License
 -------

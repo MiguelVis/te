@@ -1,0 +1,23 @@
+# TE configuration
+
+# How many lines can edit: 256..8192
+editor.maxLines = 256
+
+# How many columns (spaces) are a TAB: 1..16
+editor.tabSize = 4
+
+# Show line numbers: true / false
+editor.lineNumbers = true
+
+# C language type completion: [], {}, (), "", '', /**/
+editor.c_language = true
+
+# Automatically indent a new line as the previous one
+editor.autoIndent = true
+
+# Automatically start a list when the first non blank
+# character in a line is one of "listBullets"
+editor.autoList = true
+editor.listBullets = "-*>"
+
+

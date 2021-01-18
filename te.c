@@ -4,7 +4,7 @@
 
 	Main module.
 
-	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -72,6 +72,7 @@
 	              Solved bug in LoopDelete() - did nothing if no selection, must delete current line.
 				  Added LoopBlkEx(), LoopDeleteEx().
 				  Added automatic list.
+	04 Jan 2021 : Use configuration variables.
 
 	Notes:
 
@@ -200,6 +201,7 @@ int help_items[] = {
 /* TE modules
    ----------
 */
+#include "te_conf.c"
 #include "te_ui.c"
 #include "te_file.c"
 #include "te_keys.c"
@@ -221,22 +223,19 @@ main(argc, argv)
 int argc, argv[];
 {
 	int i;
-
+	
+	/* Setup CRT */
+	CrtSetup();
+	
 	/* Setup some globals */
 #if CRT_LONG	
 	box_rows = CRT_ROWS - 4;
 #else
 	box_rows = CRT_ROWS - 2;
 #endif
-
-#if OPT_NUM
-	ln_max = CRT_COLS - MAX_DIGITS - 2;
-#else
-	ln_max = CRT_COLS - 1;
-#endif
-
-	/* Setup CRT */
-	CrtSetup();
+		
+	/* Max. width of lines */
+	ln_max = CRT_COLS - cf_num - 1;
 
 	/* Print layout */
 	Layout();
@@ -246,7 +245,7 @@ int argc, argv[];
 
 	fe_dat = malloc(FORCED_MAX * SIZEOF_INT);
 
-	lp_arr = malloc(MAX_LINES * SIZEOF_PTR);
+	lp_arr = malloc(cf_mx_lines * SIZEOF_PTR);
 
 	i = 1;
 
@@ -288,7 +287,7 @@ int argc, argv[];
 #endif
 
 	/* Setup lines */
-	for(i = 0; i < MAX_LINES; ++i) {
+	for(i = 0; i < cf_mx_lines; ++i) {
 		lp_arr[i] = NULL;
 	}
 
@@ -589,13 +588,8 @@ LoopPgDown()
 LoopCr()
 {
 	int ok, rs;
-
-#if OPT_INDENT
 	int i, k;
 	
-	k = 0;
-#endif
-
 	if(box_shc) {
 		if(ln_dat[box_shc]) {
 			/* Cursor is in the middle of the line */
@@ -620,31 +614,33 @@ LoopCr()
 	if(ok) {
 
 		++lp_cur;
+		
+		k = 0;
 
-#if OPT_INDENT
 		if(box_shc) {
-			for(i = 0; ln_dat[i] == ' '; ++i)
-				;
-
-#if OPT_LIST
-			if(strchr(LIST_CHRS, ln_dat[i]) && ln_dat[i + 1] == ' ') {
-				i += 2;
+			
+			i = 0;
+			
+			if(cf_indent) {
+				while(ln_dat[i] == ' ') {
+					++i;
+				}
 			}
-#endif
 
-			if(i) {		
+			if(cf_list) {
+				if(strchr(cf_list_chr, ln_dat[i]) && ln_dat[i + 1] == ' ') {
+					i += 2;
+				}
+			}
+
+			if(i) {
 				k = i;
 				
 				strcpy(ln_dat + i, lp_arr[lp_cur]);
-/*
-				while(i--) {
-					ln_dat[i] = ' ';
-				}
-*/
+
 				ModifyLine(lp_cur, ln_dat);
 			}
 		}
-#endif
 
 		if(box_shr < box_rows - 1) {
 
@@ -656,11 +652,7 @@ LoopCr()
 			Refresh(0, lp_cur - box_rows + 1);
 		}
 
-#if OPT_INDENT
 		box_shc = k;
-#else
-		box_shc = 0;
-#endif
 
 		lp_chg = 1;
 	}

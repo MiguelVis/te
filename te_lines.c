@@ -4,7 +4,7 @@
 
 	Operations with text lines.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -25,6 +25,7 @@
 	06 Jan 2019 : Extracted from te.c.
 	07 Jan 2019 : Added InsertLine(), AppendLine(), SplitLine(), DeleteLine(), JoinLines().
 	08 Jan 2019 : Added SetLine(), ModifyLine(), ClearLine(). Modified InsertLine().
+	04 Jan 2021 : Use configuration variables.
 */
 
 /* Return line # of first line printed on the editor box
@@ -57,7 +58,7 @@ int line; char *text; int insert;
 	char *p;
 	int i;
 	
-	if(insert && lp_now >= MAX_LINES) {
+	if(insert && lp_now >= cf_mx_lines) {
 		ErrLineTooMany();
 		
 		return 0;

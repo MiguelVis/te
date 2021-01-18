@@ -4,7 +4,7 @@
 
 	Definitions.
 
-	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -51,6 +51,9 @@
 	08 Mar 2020 : v1.40 : Added CRT_CAN_REV.
 	22 Dec 2020 : Added MAC_FTYPE.
 	31 Dec 2020 : Added OPT_LIST, LIST_CHRS, NUM_SEP. Added default values for layout characters.
+	05 Jan 2021 : Remove MAX_DIGITS.
+	14 Jan 2021 : Remove OPT_NUM, TAB_COLS.
+	18 Jan 2021 : v1.50
 
 	Notes:
 
@@ -60,12 +63,12 @@
 /* Version
    -------
 */
-#define VERSION "v1.40 / 08 Mar 2020 for CP/M"
+#define VERSION "v1.50 / 18 Jan 2021 for CP/M"
 
 /* Copyright
    ---------
 */
-#define COPYRIGHT "(c) 2015-2020 Miguel Garcia / FloppySoftware"
+#define COPYRIGHT "(c) 2015-2021 Miguel Garcia / FloppySoftware"
 
 /* Default options
    ---------------
@@ -92,22 +95,6 @@
 
 #ifndef OPT_MACRO
 #define OPT_MACRO  1  /* Enable macros */
-#endif
-
-#ifndef OPT_NUM
-#define OPT_NUM    1  /* Line numbers */
-#endif
-
-#ifndef OPT_CLANG
-#define OPT_CLANG  1  /* C language completion */
-#endif
-
-#ifndef OPT_INDENT
-#define OPT_INDENT 1  /* Automatic indentation */
-#endif
-
-#ifndef OPT_LIST
-#define OPT_LIST   1  /* Automatic list -- need OPT_INDENT */
 #endif
 
 /* CRT defs.
@@ -143,26 +130,14 @@
 #endif
 #endif
 
-#if OPT_NUM
 #ifndef NUM_SEP
 #define NUM_SEP      '|'  /* Character to separate line numbers from text, when OPT_NUM == 1 */
-#endif
-#endif
-
-#if OPT_LIST
-#ifndef LIST_CHRS
-#define LIST_CHRS   "-*" /* First characters for lists */
-#endif
 #endif
 
 /* More defs.
    ----------
 */
 #define MAX_LINES  512   /* Max. # of text lines: each empty line uses 2 bytes with the Z80 */
-
-#define MAX_DIGITS 3     /* Max. # of digits in line number */
-
-#define TAB_COLS   8     /* How many columns has a tab. (usually 8) */
 
 #define FORCED_MAX 128   /* Keyboard forced entry buffer size (for paste, tabs, etc.) */
 

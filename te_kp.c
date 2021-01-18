@@ -5,6 +5,8 @@
 
 	Adapted by Stephen S. Mitchell from a version for the Amstrad PCW
         written by Miguel Garcia / Floppy Software.
+		
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -45,6 +47,7 @@
 	29 Jan 2019 : Added K_CLRCLP.
 	24 Dec 2019 : Added OPT_NUM.
 	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
+	14 Jan 2021 : Remove OPT_NUM.
 
 	Notes:
 
@@ -61,7 +64,6 @@
 #define OPT_GOTO  1  /* Go to line # */
 #define OPT_BLOCK 1  /* Block selection */
 #define OPT_MACRO 1  /* Enable macros */
-#define OPT_NUM   1  /* Line numbers */
 
 /* Definitions
    -----------

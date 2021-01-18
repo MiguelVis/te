@@ -36,6 +36,7 @@
 	24 Dec 2019 : Added support for line numbers.
 	26 Dec 2019 : Now K_INTRO is K_CR.
 	01 Mar 2020 : Added CLANG support. Set fe_forced flag in ForceGetCh().
+	04 Jan 2021 : Use configuration variables.
 */
 
 /* Edit current line
@@ -97,11 +98,7 @@ BfEdit()
 		{
 			upd_cur = 0;
 
-#if OPT_NUM
-			CrtLocate(BOX_ROW + box_shr, box_shc + MAX_DIGITS + 1);
-#else
-			CrtLocate(BOX_ROW + box_shr, box_shc);
-#endif
+			CrtLocate(BOX_ROW + box_shr, box_shc + cf_num);
 		}
 
 		/* Get character and do action */
@@ -131,11 +128,7 @@ BfEdit()
 			if(upd_cur) {
 				LoopBlkUnset();
 
-#if OPT_NUM
-			CrtLocate(BOX_ROW + box_shr, box_shc + MAX_DIGITS + 1);
-#else
-			CrtLocate(BOX_ROW + box_shr, box_shc);
-#endif
+				CrtLocate(BOX_ROW + box_shr, box_shc + cf_num);
 
 				upd_cur = 0;
 			}
@@ -158,24 +151,24 @@ BfEdit()
 
 				++upd_lin; ++upd_now; ++upd_col;
 
-#if OPT_CLANG
+				if(cf_clang) {
 #if OPT_MACRO
-				if(!MacroRunning())
-				{
-#endif
-					switch(ch)
+					if(!MacroRunning())
 					{
-						case '[' : ForceChLeft(len, ']'); break;
-						case '{' : ForceChLeft(len, '}'); break;
-						case '(' : ForceChLeft(len, ')'); break;
-						case '"' : ForceChLeft(len, '"'); break;
-						case '\'' : ForceChLeft(len, '\''); break;
-						case '*' : if(box_shc > 1 && ln_dat[box_shc - 2] == '/' && len + 1 < ln_max) { ForceStr("*/"); ForceCh(K_LEFT); ForceCh(K_LEFT);} break;
-					}
+#endif
+						switch(ch)
+						{
+							case '[' : ForceChLeft(len, ']'); break;
+							case '{' : ForceChLeft(len, '}'); break;
+							case '(' : ForceChLeft(len, ')'); break;
+							case '"' : ForceChLeft(len, '"'); break;
+							case '\'' : ForceChLeft(len, '\''); break;
+							case '*' : if(box_shc > 1 && ln_dat[box_shc - 2] == '/' && len + 1 < ln_max) { ForceStr("*/"); ForceCh(K_LEFT); ForceCh(K_LEFT);} break;
+						}
 #if OPT_MACRO
+					}
+#endif
 				}
-#endif
-#endif
 			}
 
 			++upd_cur;
@@ -299,7 +292,7 @@ BfEdit()
 					++upd_cur;
 					break;
 				case K_TAB :    /* Insert TAB (spaces) ------------------- */
-					i = TAB_COLS - box_shc % TAB_COLS;
+					i = cf_tab_cols - box_shc % cf_tab_cols;
 
 					while(i--)
 					{
@@ -467,10 +460,8 @@ ForceGetCh()
 	return getchr();
 }
 
-#if OPT_CLANG
-
-/* Single character completion for C language
-   ------------------------------------------
+/* Single character completion for C language, etc.
+   ------------------------------------------------
 */
 ForceChLeft(len, ch)
 int len, ch;
@@ -483,7 +474,5 @@ int len, ch;
 		}
 	}
 }
-
-#endif
 
 

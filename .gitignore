@@ -58,6 +58,6 @@ z80.h
 # PROJECT FILES & FOLDERS
 # -----------------------
 backup/
+cfreader.h
 TODO.TXT
 TE.BKP
-TE.CF

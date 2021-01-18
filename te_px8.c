@@ -2,7 +2,7 @@
 
 	Text editor -- version for the Epson PX-8 "Geneva".
 
-	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -33,6 +33,7 @@
 
 	16 Feb 2020 : 1st version.
 	08 Mar 2020 : Alternative to reverse video. First public release.
+	14 Jan 2021 : Remove OPT_NUM.
 
 	Notes:
 
@@ -53,7 +54,6 @@
 #define OPT_GOTO  1  /* Go to line # */
 #define OPT_BLOCK 1  /* Block selection */
 #define OPT_MACRO 1  /* Enable macros */
-#define OPT_NUM   1  /* Line numbers */
 
 /* Definitions
    -----------

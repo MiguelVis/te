@@ -4,7 +4,7 @@
 
 	User interface.
 
-	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -33,6 +33,7 @@
 	28 Feb 2020 : Minor changes.
 	08 Mar 2020 : Support for CRT_LONG in menu, about and (ejem) help options.
 	31 Dec 2020 : Use NUM_SEP instead of space to separate line numbers from text.
+	04 Jan 2021 : Use configuration variables.
 */
 
 /* Read character from keyboard
@@ -104,11 +105,7 @@ char *format; int value;
 */
 Layout()
 {
-	int i, k;
-
-#if OPT_NUM
-	int w;
-#endif
+	int i, k, w;
 
 	/* Clear screen */
 	CrtClear();
@@ -120,31 +117,24 @@ Layout()
 	CrtLocate(PS_ROW, PS_INF); putstr(PS_TXT);
 
 	/* Max. # of lines */
-	CrtLocate(PS_ROW, PS_LIN_MAX); putint("%04d", MAX_LINES);
+	CrtLocate(PS_ROW, PS_LIN_MAX); putint("%04d", cf_mx_lines);
 
 	/* # of columns */
 	CrtLocate(PS_ROW, PS_COL_MAX); putint("%02d", 1 + ln_max);
 
 	/* Ruler */
 #if CRT_LONG
-#if OPT_NUM
-	CrtLocate(BOX_ROW - 1, MAX_DIGITS + 1);
+	CrtLocate(BOX_ROW - 1, cf_num);
 
-	w = CRT_COLS - MAX_DIGITS - 1;
+	w = CRT_COLS - cf_num;
 
 	for(i = k = 0; i < w; ++i)
-#else
-	CrtLocate(BOX_ROW - 1, 0);
-
-	for(i = k = 0; i < CRT_COLS; ++i)
-#endif
-
 	{
 		if(k++)
 		{
 			putchr(RULER_CHR);
 
-			if(k == TAB_COLS)
+			if(k == cf_tab_cols)
 				k = 0;
 		}
 		else
@@ -395,12 +385,9 @@ int row, sel;
 		if(line >= blk_start) {
 			if(line <= blk_end) {
 #if CRT_CAN_REV
-#if OPT_NUM
-				CrtLocate(BOX_ROW + i, MAX_DIGITS + 1);
+				CrtLocate(BOX_ROW + i, cf_num);
 				CrtClearEol();
-#else
-				CrtClearLine(BOX_ROW + i);
-#endif
+
 				if(sel) {
 					CrtReverse(1);
 				}
@@ -435,10 +422,7 @@ Refresh(row, line)
 int row, line;
 {
 	int i;
-
-#if OPT_NUM
 	char *format;
-#endif
 
 #if OPT_BLOCK
 
@@ -449,10 +433,10 @@ int row, line;
 
 #endif
 
-#if OPT_NUM
-	format = "%?d";
-	format[1] = '0' + MAX_DIGITS;
-#endif
+	if(cf_num) {
+		format = "%?d";
+		format[1] = '0' + cf_num - 1;
+	}
 
 	for(i = row; i < box_rows; ++i)
 	{
@@ -460,10 +444,10 @@ int row, line;
 
 		if(line < lp_now) {
 
-#if OPT_NUM
-			putint(format, line + 1);
-			putchr(NUM_SEP);
-#endif
+			if(cf_num) {
+						putint(format, line + 1);
+						putchr(NUM_SEP);
+			}
 
 #if OPT_BLOCK
 

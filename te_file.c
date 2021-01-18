@@ -4,7 +4,7 @@
 
 	File I/O.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -27,6 +27,7 @@
 	09 Jan 2018 : Optimize ReadFile().
 	16 Jan 2019 : Added support for block selection.
 	19 Jan 2019 : Optimize WriteFile().
+	04 Jan 2021 : Use configuration variables.
 */
 
 /* Reset lines array
@@ -36,7 +37,7 @@ ResetLines()
 {
 	int i;
 
-	FreeArray(lp_arr, MAX_LINES, 0);
+	FreeArray(lp_arr, cf_mx_lines, 0);
 
 	lp_cur = lp_now = lp_chg = box_shr = box_shc = 0;
 
@@ -95,7 +96,7 @@ char *fn;
 		if(!fgets(ln_dat, ln_max + 2, fp)) /* ln_max + CR + ZERO */
 			break;
 
-		if(lp_now == MAX_LINES)
+		if(lp_now == cf_mx_lines)
 		{
 			ErrLineTooMany(); ++code; break;
 		}
