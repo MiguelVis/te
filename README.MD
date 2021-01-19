@@ -474,8 +474,9 @@ The current supported options are the following:
 ```
 # TE configuration
 
-# How many lines can edit: 256..8192
-editor.maxLines = 256
+# How many lines can edit: 256..4096 -- each
+# empty line occupies 2 bytes of RAM
+editor.maxLines = 512
 
 # How many columns (spaces) are a TAB: 1..16
 editor.tabSize = 4
@@ -490,7 +491,8 @@ editor.c_language = true
 editor.autoIndent = true
 
 # Automatically start a list when the first non blank
-# character in a line is one of "listBullets"
+# character in a line is one of "listBullets" -- max.
+# 7 characters in long
 editor.autoList = true
 editor.listBullets = "-*>"
 ```
