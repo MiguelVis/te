@@ -40,6 +40,8 @@
 
 		02 Jan 2021 : Start.
 		18 Jan 2021 : v1.00.
+		22 Feb 2021 : Added screen.rows and screen.columns.
+		22 Feb 2021 : v1.10.
 
 	Notes:
 
@@ -75,13 +77,23 @@
 /* TE shared libraries
    -------------------
 */
+#asm
+
+; The following values are needed before including te_conf.c in
+; order to avoid errors in TECF compilation.
+
+CRT_ROWS: equ 0  ; CRT rows
+CRT_COLS: equ 0  ; CRT columns
+
+#endasm
+
 #include "te_conf.c"
 
 /* Project defs.
    -------------
 */
 #define APP_NAME    "TECF"
-#define APP_VERSION "v1.00 / 18 Jan 2021"
+#define APP_VERSION "v1.10 / 22 Feb 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE configuration tool."
 #define APP_USAGE   "tecf action arguments..."
@@ -91,6 +103,10 @@
 #define APP_ACTION4 "\tdump [filename[.COM]] [> filename.CF]"
 #define APP_ACTION5 "Default value for \"filename\" is \"TE\"."
 
+#define CF_MIN_ROWS    18
+#define CF_MAX_ROWS    255
+#define CF_MIN_COLS    64
+#define CF_MAX_COLS    255
 #define CF_MIN_LINES   64
 #define CF_MAX_LINES   4096
 #define CF_MIN_TABSIZE 1
@@ -377,7 +393,13 @@ char *key, *val;
 	conf_key = key;
 	conf_val = val;
 
-	if(key_match("editor.maxLines")) {
+	if(key_match("screen.rows")) {
+		cf_rows = get_uint(CF_MIN_ROWS, CF_MAX_ROWS);
+	}
+	else if(key_match("screen.columns")) {
+		cf_cols = get_uint(CF_MIN_COLS, CF_MAX_COLS);
+	}
+	else if(key_match("editor.maxLines")) {
 		cf_mx_lines = get_uint(CF_MIN_LINES, CF_MAX_LINES);
 	}
 	else if(key_match("editor.tabSize")) {
@@ -486,6 +508,8 @@ get_bool()
 */
 dump_cf()
 {
+	dump_uint("screen.rows", cf_rows);
+	dump_uint("screen.columns", cf_cols);
 	dump_uint("editor.maxLines", cf_mx_lines);
 	dump_uint("editor.tabSize", cf_tab_cols);
 	dump_bool("editor.lineNumbers", cf_num);

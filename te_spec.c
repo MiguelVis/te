@@ -44,6 +44,7 @@
 	24 Dec 2019 : Added OPT_NUM.
 	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
 	14 Jan 2021 : Remove OPT_NUM.
+	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
 
 	Notes:
 
@@ -70,8 +71,12 @@
 */
 #define CRT_NAME "Spectrum +3 & CP/M 3"
 
-#define CRT_ROWS 23        /* CRT rows: 24 - 1 (system line) */
-#define CRT_COLS 51        /* CRT columns */
+#asm
+
+CRT_ROWS: equ 23  ; CRT rows: 24 - 1 (system line)
+CRT_COLS: equ 51  ; CRT columns
+
+#endasm
 
 #define RULER_TAB     0x91 /* Ruler: Tab stop character - ie: ! */
 #define RULER_CHR     0x90 /* Ruler: Character - ie: . */

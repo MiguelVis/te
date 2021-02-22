@@ -34,6 +34,7 @@
 	08 Mar 2020 : Support for CRT_LONG in menu, about and (ejem) help options.
 	31 Dec 2020 : Use NUM_SEP instead of space to separate line numbers from text.
 	04 Jan 2021 : Use configuration variables.
+	22 Feb 2021 : Removed CRT_ROWS, CRT_COLS.
 */
 
 /* Read character from keyboard
@@ -126,7 +127,7 @@ Layout()
 #if CRT_LONG
 	CrtLocate(BOX_ROW - 1, cf_num);
 
-	w = CRT_COLS - cf_num;
+	w = cf_cols - cf_num;
 
 	for(i = k = 0; i < w; ++i)
 	{
@@ -142,9 +143,9 @@ Layout()
 	}
 
 	/* System line separator */
-	CrtLocate(CRT_ROWS - 2, 0);
+	CrtLocate(cf_rows - 2, 0);
 
-	putchrx(SYS_LINE_SEP, CRT_COLS);
+	putchrx(SYS_LINE_SEP, cf_cols);
 #endif
 }
 
@@ -169,7 +170,7 @@ ShowFilename()
 SysLine(s)
 char *s;
 {
-	CrtClearLine(CRT_ROWS - 1);
+	CrtClearLine(cf_rows - 1);
 
 	if(s)
 		putstr(s);
@@ -363,7 +364,7 @@ ClearBox()
 CenterText(row, txt)
 int row; char *txt;
 {
-	CrtLocate(row, (CRT_COLS - strlen(txt)) / 2);
+	CrtLocate(row, (cf_cols - strlen(txt)) / 2);
 
 	putstr(txt);
 }
@@ -400,7 +401,7 @@ int row, sel;
 					CrtReverse(0);
 				}
 #else
-				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(sel ? BLOCK_CHR : ' ');
+				CrtLocate(BOX_ROW + i, cf_cols - 1); putchr(sel ? BLOCK_CHR : ' ');
 #endif
 			}
 			else {
@@ -477,7 +478,7 @@ int row, line;
 #else
 				sel = 0;
 
-				CrtLocate(BOX_ROW + i, CRT_COLS - 1); putchr(BLOCK_CHR);
+				CrtLocate(BOX_ROW + i, cf_cols - 1); putchr(BLOCK_CHR);
 #endif
 			}
 

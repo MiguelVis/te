@@ -1,7 +1,7 @@
 te
 ==
 
-v1.50 / 18 Jan 2021 for CP/M
+v1.60 / 22 Feb 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
@@ -473,6 +473,12 @@ The current supported options are the following:
 
 ```
 # TE configuration
+
+# Screen height: 18..255 -- uncomment and change if needed
+#screen.rows = 25
+
+# Screen width: 64..255 -- uncomment and change if needed
+#screen.columns = 80
 
 # How many lines can edit: 256..4096 -- each
 # empty line occupies 2 bytes of RAM

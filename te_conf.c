@@ -23,6 +23,7 @@
 	Changes:
 
 	22 Oct 2020 : Start.
+	22 Feb 2021 : Added screen rows and columns.
 
 	Notes:
 
@@ -32,8 +33,8 @@
 /* Configuration variables
    -----------------------
 */
-//extern unsigned char cf_rows;
-//extern unsigned char cf_cols;
+extern unsigned char cf_rows;
+extern unsigned char cf_cols;
 extern int cf_mx_lines;
 extern unsigned char cf_tab_cols;
 extern unsigned char cf_num;
@@ -54,15 +55,15 @@ extern int cf_bytes;
 cf_start:
 	          defb 'TE_CONF', 0     ;  8 bytes > Identifier + ZERO for the configuration block in memory and COM file.
 
-cf_version:   defb 0                ;  1 byte  > Configuration version >= 0. It's not the TE version.
+cf_version:   defb 1                ;  1 byte  > Configuration version >= 0. It's not the TE version.
 
 ;cf_name:      defb '0123456789'     ; 32 bytes > Configuration name + ZERO.
 ;              defb 'ABCDEF'
 ;              defb '0123456789'
 ;              defb 'ABCDE',0
 
-;cf_rows:      defb 25               ;  1 byte  > Screen rows.
-;cf_cols:      defb 80               ;  1 byte  > Screen columns.
+cf_rows:      defb CRT_ROWS         ;  1 byte  > Screen rows.
+cf_cols:      defb CRT_COLS         ;  1 byte  > Screen columns.
 
 cf_mx_lines:  defw 512              ;  2 bytes > Max. number of lines in editor.
                                     ;            Each line takes 2 bytes (1 word) of memory.

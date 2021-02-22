@@ -34,6 +34,7 @@
 	16 Feb 2020 : 1st version.
 	08 Mar 2020 : Alternative to reverse video. First public release.
 	14 Jan 2021 : Remove OPT_NUM.
+	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
 
 	Notes:
 
@@ -60,8 +61,13 @@
 */
 #define CRT_NAME "Epson PX-8 \"Geneva\""
 
-#define CRT_ROWS    8   /* CRT rows */
-#define CRT_COLS    80  /* CRT columns */
+#asm
+
+CRT_ROWS: equ 8   ; CRT rows
+CRT_COLS: equ 80  ; CRT columns
+
+#endasm
+
 #define CRT_CAN_REV 0   /* Reverse video is not available */
 #define CRT_LONG    0   /* CRT has few lines */
 

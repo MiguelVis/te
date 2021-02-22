@@ -73,6 +73,7 @@
 				  Added LoopBlkEx(), LoopDeleteEx().
 				  Added automatic list.
 	04 Jan 2021 : Use configuration variables.
+	22 Feb 2021 : Removed CRT_ROWS, CRT_COLS.
 
 	Notes:
 
@@ -138,7 +139,7 @@ char file_name[FILENAME_MAX];
 */
 int box_rows; /* Height in lines */
 int box_shr;  /* Vertical   position of cursor in the box (0..box_rows - 1) */
-int box_shc;  /* Horizontal position of cursor in the box (0..CRT_COLS - 1) */
+int box_shc;  /* Horizontal position of cursor in the box (0..cf_cols - 1) */
 
 /* Keyboard forced entry
    ---------------------
@@ -229,13 +230,13 @@ int argc, argv[];
 	
 	/* Setup some globals */
 #if CRT_LONG	
-	box_rows = CRT_ROWS - 4;
+	box_rows = cf_rows - 4;
 #else
-	box_rows = CRT_ROWS - 2;
+	box_rows = cf_rows - 2;
 #endif
 		
 	/* Max. width of lines */
-	ln_max = CRT_COLS - cf_num - 1;
+	ln_max = cf_cols - cf_num - 1;
 
 	/* Print layout */
 	Layout();

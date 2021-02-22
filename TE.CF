@@ -1,5 +1,11 @@
 # TE configuration
 
+# Screen height: 18..255 -- uncomment and change if needed
+#screen.rows = 25
+
+# Screen width: 64..255 -- uncomment and change if needed
+#screen.columns = 80
+
 # How many lines can edit: 256..4096 -- each
 # empty line occupies 2 bytes of RAM
 editor.maxLines = 512

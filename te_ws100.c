@@ -46,6 +46,7 @@
 	24 Dec 2019 : Added OPT_NUM.
 	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
 	14 Jan 2021 : Remove OPT_NUM.
+	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
 
 	Notes:
 
@@ -68,8 +69,12 @@
 */
 #define CRT_NAME "VT100 & WordStar keys"
 
-#define CRT_ROWS 25       /* CRT rows */
-#define CRT_COLS 80       /* CRT columns */
+#asm
+
+CRT_ROWS: equ 25  ; CRT rows
+CRT_COLS: equ 80  ; CRT columns
+
+#endasm
 
 #define RULER_TAB    '!'  /* Ruler: Tab stop character - ie: ! */
 #define RULER_CHR    '.'  /* Ruler: Character - ie: . */

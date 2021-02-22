@@ -54,6 +54,8 @@
 	05 Jan 2021 : Remove MAX_DIGITS.
 	14 Jan 2021 : Remove OPT_NUM, TAB_COLS.
 	18 Jan 2021 : v1.50
+	22 Feb 2021 : Remove CRT_COLS.
+	22 Feb 2021 : v1.60
 
 	Notes:
 
@@ -63,7 +65,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.50 / 18 Jan 2021 for CP/M"
+#define VERSION "v1.60 / 22 Feb 2021 for CP/M"
 
 /* Copyright
    ---------
@@ -146,14 +148,14 @@
 #define PS_ROW     0     /* Information position */
 #define PS_FNAME   4     /* Filename - position in row */
 #define PS_TXT     "--- | Lin:0000/0000/0000 Col:00/00 Len:00"  /* Information layout */
-#define PS_INF     (CRT_COLS - 41)  /* Information layout - position in row */
-#define PS_CLP     (CRT_COLS - 41)  /* Clipboard status */
-#define PS_LIN_CUR (CRT_COLS - 31)  /* Current line # - position in row */
-#define PS_LIN_NOW (CRT_COLS - 26)  /* How many lines # - position in row */
-#define PS_LIN_MAX (CRT_COLS - 21)  /* Max. # of lines - position in row */
-#define PS_COL_CUR (CRT_COLS - 12)  /* Current column # - position in row */
-#define PS_COL_NOW (CRT_COLS -  2)  /* Line length - position in row */
-#define PS_COL_MAX (CRT_COLS -  9)  /* Max. line length - position in row */
+#define PS_INF     (cf_cols - 41)  /* Information layout - position in row */
+#define PS_CLP     (cf_cols - 41)  /* Clipboard status */
+#define PS_LIN_CUR (cf_cols - 31)  /* Current line # - position in row */
+#define PS_LIN_NOW (cf_cols - 26)  /* How many lines # - position in row */
+#define PS_LIN_MAX (cf_cols - 21)  /* Max. # of lines - position in row */
+#define PS_COL_CUR (cf_cols - 12)  /* Current column # - position in row */
+#define PS_COL_NOW (cf_cols -  2)  /* Line length - position in row */
+#define PS_COL_MAX (cf_cols -  9)  /* Max. line length - position in row */
 
 #if CRT_LONG
 #define BOX_ROW    2        /* Editor box position */
