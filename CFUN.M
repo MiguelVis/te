@@ -1,9 +1,9 @@
-{begin}{cr}{up}
-/**{cr}
- * @fn     [prototype]{cr}
- * @brief  [small explanation]{cr}
- * @param  [name] - [meaning]{cr}
- * @return [what]{cr}
+{begin}{newline}{up}
+/**{newline}
+ * @fn     [prototype]{newline}
+ * @brief  [small explanation]{newline}
+ * @param  [name] - [meaning]{newline}
+ * @return [what]{newline}
  */
 {up:4}
 {right:8}
