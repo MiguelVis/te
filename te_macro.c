@@ -27,6 +27,7 @@
 	26 Dec 2018 : Allow # of repeats in macros - ie {up:12}. Rename MacroGetCh() to MacroGet().
 	29 Dec 2018 : Added MacroRunning().
 	26 Dec 2019 : Now K_INTRO is K_CR.
+	01 Jul 2021 : Change macro symbol names to match key bindings names.
 */
 
 /* Run a macro from file
@@ -181,27 +182,27 @@ MacroGet()
 				/* Do command action */
 				ch = 0;
 
-				if     (MatchStr(sym, "up"))       ch = K_UP;
-				else if(MatchStr(sym, "down"))     ch = K_DOWN;
-				else if(MatchStr(sym, "left"))     ch = K_LEFT;
-				else if(MatchStr(sym, "right"))    ch = K_RIGHT;
-				else if(MatchStr(sym, "begin"))    ch = K_BEGIN;
-				else if(MatchStr(sym, "end"))      ch = K_END;
-				else if(MatchStr(sym, "top"))      ch = K_TOP;
-				else if(MatchStr(sym, "bottom"))   ch = K_BOTTOM;
-				else if(MatchStr(sym, "cr"))       ch = K_CR;
-				else if(MatchStr(sym, "tab"))      ch = K_TAB;
-				else if(MatchStr(sym, "rdel"))     ch = K_RDEL;
-				else if(MatchStr(sym, "ldel"))     ch = K_LDEL;
-				else if(MatchStr(sym, "cut"))      ch = K_CUT;
-				else if(MatchStr(sym, "copy"))     ch = K_COPY;
-				else if(MatchStr(sym, "paste"))    ch = K_PASTE;
-				else if(MatchStr(sym, "delete"))   ch = K_DELETE;
-				else if(MatchStr(sym, "clrclip"))  ch = K_CLRCLP;
+				if     (MatchStr(sym, "up"))         ch = K_UP;
+				else if(MatchStr(sym, "down"))       ch = K_DOWN;
+				else if(MatchStr(sym, "left"))       ch = K_LEFT;
+				else if(MatchStr(sym, "right"))      ch = K_RIGHT;
+				else if(MatchStr(sym, "begin"))      ch = K_BEGIN;
+				else if(MatchStr(sym, "end"))        ch = K_END;
+				else if(MatchStr(sym, "top"))        ch = K_TOP;
+				else if(MatchStr(sym, "bottom"))     ch = K_BOTTOM;
+				else if(MatchStr(sym, "newline"))    ch = K_CR;
+				else if(MatchStr(sym, "indent"))     ch = K_TAB;
+				else if(MatchStr(sym, "delright"))   ch = K_RDEL;
+				else if(MatchStr(sym, "delleft"))    ch = K_LDEL;
+				else if(MatchStr(sym, "cut"))        ch = K_CUT;
+				else if(MatchStr(sym, "copy"))       ch = K_COPY;
+				else if(MatchStr(sym, "paste"))      ch = K_PASTE;
+				else if(MatchStr(sym, "delete"))     ch = K_DELETE;
+				else if(MatchStr(sym, "clearclip"))  ch = K_CLRCLP;
 
 #if OPT_BLOCK
-				else if(MatchStr(sym, "blkstart")) ch = K_BLK_START;
-				else if(MatchStr(sym, "blkend"))   ch = K_BLK_END;
+				else if(MatchStr(sym, "blockstart")) ch = K_BLK_START;
+				else if(MatchStr(sym, "blockend"))   ch = K_BLK_END;
 #endif
 
 				if(ch)

@@ -45,6 +45,9 @@
 	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
 	14 Jan 2021 : Remove OPT_NUM.
 	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
+	04 Apr 2021 : Remove key bindings.
+	11 May 2021 : Remove CRT configuration values.
+	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
 
 	Notes:
 
@@ -54,6 +57,12 @@
 
 	It supports 24x32 and 24x80 (in two pages) CRT modes also.
 */
+
+/* Default configuration values
+   ----------------------------
+*/
+#define CRT_DEF_ROWS 23
+#define CRT_DEF_COLS 51
 
 /* Options
    -------
@@ -65,22 +74,6 @@
 #define OPT_GOTO  1  /* Go to line # */
 #define OPT_BLOCK 1  /* Block selection */
 #define OPT_MACRO 1  /* Enable macros */
-
-/* Definitions
-   -----------
-*/
-#define CRT_NAME "Spectrum +3 & CP/M 3"
-
-#asm
-
-CRT_ROWS: equ 23  ; CRT rows: 24 - 1 (system line)
-CRT_COLS: equ 51  ; CRT columns
-
-#endasm
-
-#define RULER_TAB     0x91 /* Ruler: Tab stop character - ie: ! */
-#define RULER_CHR     0x90 /* Ruler: Character - ie: . */
-#define SYS_LINE_SEP  0x9A /* System line separator character - ie: - */
 
 /* Include main code
    -----------------
@@ -96,48 +89,6 @@ CrtSetup()
 	CrtSetupEx();
 	
 	CrtOut(27); CrtOut('3'); CrtOut(1); /* Set 24 x 51 mode */	
-
-	SetKey(K_UP,        31,    '\0', NULL);
-	SetKey(K_DOWN,      30,    '\0', NULL);
-	SetKey(K_LEFT,      CTL_A, '\0', NULL);
-	SetKey(K_RIGHT,     CTL_F, '\0', NULL);
-	SetKey(K_BEGIN,     CTL_V, '\0', NULL);
-	SetKey(K_END,       28,    '\0', NULL);
-	SetKey(K_TOP,       CTL_P, '\0', NULL);
-	SetKey(K_BOTTOM,    CTL_S, '\0', NULL);
-	SetKey(K_PGUP,      CTL_Q, '\0', NULL);
-	SetKey(K_PGDOWN,    CTL_Z, '\0', NULL);
-	SetKey(K_TAB,       CTL_I, '\0', NULL);
-	SetKey(K_CR,        CTL_M, '\0', "ENTER");
-	SetKey(K_ESC,       ESC,   '\0', "BREAK");
-	SetKey(K_RDEL,      CTL_G, '\0', "GRAPH");
-	SetKey(K_LDEL,      DEL,   '\0', "DEL");
-	SetKey(K_CUT,       CTL_U, '\0', NULL);
-	SetKey(K_COPY,      CTL_R, '\0', NULL);
-	SetKey(K_PASTE,     CTL_W, '\0', NULL);
-	SetKey(K_DELETE,    CTL_D, '\0', NULL);
-	SetKey(K_CLRCLP,    CTL_T, '\0', NULL);
-#if OPT_FIND	
-	SetKey(K_FIND,      CTL_K, '\0', NULL);
-	SetKey(K_NEXT,      CTL_L, '\0', NULL);
-#endif
-#if OPT_GOTO
-	SetKey(K_GOTO,      CTL_J, '\0', NULL);
-#endif
-#if OPT_LWORD		
-	/*SetKey(K_LWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_RWORD	
-	/*SetKey(K_RWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_BLOCK	
-	SetKey(K_BLK_START, CTL_B, 'S', NULL);
-	SetKey(K_BLK_END,   CTL_B, 'E', NULL);
-	SetKey(K_BLK_UNSET, CTL_B, 'U', NULL);
-#endif
-#if OPT_MACRO	
-	SetKey(K_MACRO,     CTL_Y, '\0', NULL);
-#endif	
 }
 
 #asm

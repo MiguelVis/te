@@ -1,0 +1,56 @@
+# ========================================
+# Default TE configuration for:
+#                            ANSI TERMINAL
+# ========================================
+te.confName = "ANSI Terminal"
+
+screen.rows = 25
+screen.columns = 80
+
+screen.rulerChar = .
+screen.rulerTabChar = !
+screen.vertChar = |
+screen.horizChar = -
+screen.lineNumbersChar = |
+
+editor.maxLines = 512
+editor.tabSize = 4
+editor.lineNumbers = true
+editor.c_language = true
+editor.autoIndent = true
+editor.autoList = true
+editor.listBullets = "-*>"
+
+keyname.newLine = ENTER
+keyname.escape = ESC
+
+key.up = ^E
+key.down = ^X
+key.left = ^S
+key.right = ^D
+key.begin = ^V
+key.end = ^A
+key.top = ^P
+key.bottom = ^F
+key.pgUp = ^R
+key.pgDown = ^C
+key.indent = ^I
+key.newLine = ^M
+key.escape = ^[
+key.delRight = ^?
+key.delLeft = ^H
+key.cut = ^U
+key.copy = ^O
+key.paste = ^W
+key.delete = ^G
+key.clearClip = ^T
+key.find = ^K
+key.findNext = ^L
+key.goLine = ^J
+#key.wordLeft = ""
+#key.wordRight = ""
+key.blockStart = ^BS
+key.blockEnd = ^BE
+key.blockUnset = ^BU
+key.macro = ^Y
+

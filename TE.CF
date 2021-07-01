@@ -1,10 +1,33 @@
-# TE configuration
+# ========================================
+# TE configuration file
+# ----------------------------------------
+# IMPORTANT! This file is for TECF, the TE
+#            configuration tool.
+# ========================================
 
-# Screen height: 18..255 -- uncomment and change if needed
+# Configuration name
+#te.confName = "My own configuration"
+
+# Screen height: 8..255 or auto for CP/M 3
 #screen.rows = 25
 
-# Screen width: 64..255 -- uncomment and change if needed
+# Screen width: 64..255 or auto for CP/M 3
 #screen.columns = 80
+
+# Character for normal position in ruler
+#screen.rulerChar = "."
+
+# Character for tab stop position in ruler
+#screen.rulerTabChar = "!"
+
+# Character for vertical draws -- ie: help columns
+#screen.vertChar = "|"
+
+# Character for horizontal draws -- ie: status line
+#screen.horizChar = "-"
+
+# Character between line numbers and text
+screen.lineNumbersChar = " "
 
 # How many lines can edit: 256..4096 -- each
 # empty line occupies 2 bytes of RAM
@@ -28,4 +51,45 @@ editor.autoIndent = true
 editor.autoList = true
 editor.listBullets = "-*>"
 
+# Some keynames used in the UI
+#keyname.newLine = "ENTER"
+#keyname.escape = "ESC"
+
+# Key bindings, legal definitions are:
+# ^A   -> Ctrl-A         -> one control char.
+# ^A^X -> Ctrl-A, Ctrl-X -> two control chars.
+# ^AX  -> Ctrl-A, X      -> one control char., one char.
+#
+# Legal control characters are:
+# ^A..^Z ^[ ^\ ^] ^^ ^_ -> 1..31
+# ^?                    -> 127
+#key.up = ""
+#key.down = ""
+#key.left = ""
+#key.right = ""
+#key.begin = ""
+#key.end = ""
+#key.top = ""
+#key.bottom = ""
+#key.pgUp = ""
+#key.pgDown = ""
+#key.indent = ""
+#key.newLine = ""
+#key.escape = ""
+#key.delRight = ""
+#key.delLeft = ""
+#key.cut = ""
+#key.copy = ""
+#key.paste = ""
+#key.delete = ""
+#key.clearClip = ""
+#key.find = ""
+#key.findNext = ""
+#key.goLine = ""
+#key.wordLeft = ""
+#key.wordRight = ""
+#key.blockStart = ""
+#key.blockEnd = ""
+#key.blockUnset = ""
+#key.macro = ""
 

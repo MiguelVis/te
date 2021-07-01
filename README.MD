@@ -1,11 +1,11 @@
 te
 ==
 
-v1.60 / 22 Feb 2021 for CP/M
+v1.70 / 01 Jul 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
-www.floppysoftware.es
+[http://www.floppysoftware.es/](www.floppysoftware.es)
 
 **NOTE**: This project has been extracted from
 my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
@@ -15,10 +15,15 @@ Introduction
 
 The `te` text editor is small, humble, and useful.
 
+It edits the full text in memory, so your system must leave enough
+free TPA for the text, after `te` is loaded and running.
+
 It's screen oriented, and can be easily adapted to a lot of computers.
 
 It's written in the C language, and there are ports for various
 operating systems: CP/M, DOS, Windows and GNU/Linux.
+
+I use [MESCC](https://github.com/MiguelVis/mescc) to compile it for CP/M.
 
 ![te image](http://www.floppysoftware.es/images/cpm-te.jpg "te image")
 
@@ -131,7 +136,7 @@ ESC = menu
 ```
 
 Note that the exact name of your `ESCAPE` key may differ, depending of
-the program adaptation.
+the program configuration.
 
 The options are:
 
@@ -151,29 +156,29 @@ To leave the menu, you must press `ESCAPE`.
 
 If you select one of the options `New`, `Open` or `eXit`, and there are
 any changes that are not saved yet, te will ask you for confirmation
-before proceed (both `INTRO` or Y mean YES).
+before proceed.
 
 If you start a new document, the `Save` option will redirect to you to
 the `save As` option.
 
-The help screen will show the keyboard configuration, which depends
-of the program adaptation.
+The help screen will show the keyboard configuration (or key bindings
+if you prefer), which depends of the program configuration.
 
 For example, in the case of TE_WS100 (25x80 VT100 and WordStar keys) you
 could see something like this:
 
 ```
-Up       ^E           | Down     ^X           | Tab      ^I  TAB
-Left     ^S           | Right    ^D           | NewLine  ^M  or ^N
-Begin    ^QS          | End      ^QD          | Escape   ^[  ESC
-Top      ^QR          | Bottom   ^QC          | Macro    ^QM
-PgUp     ^C           | PgDown   ^R           |
-<-Word   ^A           | Word->   ^F           |
-<-Del    ^H  or DEL   | Del->    ^G           |
-BlkStart ^KB          | BlkEnd   ^KK          | BlkUnset ^KU
-Cut      ^Y           | Copy     ^O           | Paste    ^W
-Delete   ^KY          | ClrClip  ^T           |
-Find     ^QF          | F.Next   ^L           | GoLine   ^J
+Up         ^E   | Down       ^X   | Indent     ^I
+Left       ^S   | Right      ^D   | NewLine    ^M
+Begin      ^QS  | End        ^QD  | Escape     ^[
+Top        ^QR  | Bottom     ^QC  | Macro      ^QM
+PgUp       ^C   | PgDown     ^R   |
+WordLeft   ^A   | WordRight  ^F   |
+DelLeft    ^H   | DelRight   ^G   |
+BlockStart ^KB  | BlockEnd   ^KK  | BlockUnset ^KU
+Cut        ^Y   | Copy       ^O   | Paste      ^W
+Delete     ^KY  | ClearClip  ^T   |
+Find       ^QF  | FindNext   ^L   | GoLine     ^J
 ```
 
 
@@ -193,7 +198,7 @@ Key bindings
 As you can see in the help screen of example, there are some key
 bindings to perform actions when you are editing the file.
 
-The exact keys you must press to do an action, depend on the adaptation
+The exact keys you must press to do an action, depend on the configuration
 you are running, but the meanings are the same:
 - Up, Down, Left, Right: to move the cursor one character at a time.
 - Begin, End: to move the cursor to the begin or the end of the
@@ -201,24 +206,25 @@ you are running, but the meanings are the same:
 - Top, Bottom: to move the cursor to the begin or the end of the
   current file.
 - PgUp, PgDown: to move the cursor to the previous or next page.
-- <-Word, Word->: to move the cursor to the previous or next word.
-- <-Del, Del->: to delete the previous or next character.
-- Find, F.Next: to find a string or repeat the search.
+- WordLeft, WordRight: to move the cursor to the previous or next word.
+- DelLeft, DelRight: to delete the previous or next character.
+- Find, FindNext: to find a string or repeat the search.
 - GoLine: to go to a line number.
-- BlkStart: to mark the start of a block of lines.
-- BlkEnd: to mark the end of a block of lines.
-- BlkUnset: to unselect a block of lines.
+- BlockStart: to mark the start of a block of lines.
+- BlockEnd: to mark the end of a block of lines.
+- BlockUnset: to unselect a block of lines.
 - Cut, Copy, Paste, Delete: to cut, copy, paste or delete a line
   or block of lines.
-- ClrClip: to clear the clipboard data.
+- ClearClip: to clear the clipboard data.
 - Macro: to run a macro.
-- Tab: to insert spaces as indentation.
-- NewLine: to insert a break or empty line. Same as Cr, Enter or Return.
-- Esc: to exit the menu or cancel an action.
+- Indent: to insert spaces as indentation. Same as Tab.
+- NewLine: to insert a break or empty line. Same as Cr, Enter, Intro
+  or Return.
+- Escape: to exit the menu or cancel an action. Same as Esc.
 
 Take into account that some actions could not be available in all te
-adaptations to save memory space. These actions are: <-Word, Word->,
-Find, F.Next, GoLine, BlkStart, BlkEnd, BlkUnset and Macro.
+adaptations to save memory space. These actions are: WordLeft, WordRight,
+Find, FindNext, GoLine, BlockStart, BlockEnd, BlockUnset and Macro.
 
 If you miss one or more of the mentioned actions, you can edit the exact
 file of the te adaptation and recompile it to include them.
@@ -227,21 +233,17 @@ file of the te adaptation and recompile it to include them.
 Auto-completion
 ---------------
 
-If the text editor is compiled with the auto-completion option enabled,
-the input of some characters will cause the automatic input of some other.
+If the text editor is configured with the C language type auto-completion
+option enabled, the input of some characters will cause the automatic input
+of some other:
 
-Very useful for programmers:
 ```
-[ --> ]
-{ --> }
-( --> )
-" --> "
-' --> '
-```
-
-Also, for C language style comments:
-```
-/* --> */
+[  -->  ]
+{  -->  }
+(  -->  )
+"  -->  "
+'  -->  '
+/* -->  */
 ```
 
 
@@ -267,7 +269,8 @@ Lists
 -----
 
 The text editor supports automatic lists, when the first non blank
-character of the previous line is one of: - and *.
+character of the previous line is one of the "bullets" according
+to the configuration.
 
 As automatic indentation is supported, automatic multi level lists
 are possible - ie:
@@ -277,6 +280,8 @@ are possible - ie:
 - Item #2
   * Item #2a
   * Item #2b
+    > Item #2b-1
+	> Item #2b-2
 - Item #3
 ```
 
@@ -287,10 +292,12 @@ Macros
 Macros are a powerful way to perform repetitive tasks at editing level.
 
 For example, you could create a macro with your signature to include it
-in all letters you write.
+in every letter you write.
 
 Or, being a programmer, you could create a gdoc block macro to document
 your own C functions.
+
+Macros are not affected by auto-completion, auto-indentation or lists.
 
 Each time you want to run a macro, just press the corresponding key
 for the Macro action, enter the filename you choose when you saved it
@@ -309,19 +316,19 @@ JOIN.MAC   you must enter JOIN.MAC
 There are some special symbols you can use in your macros:
 
 ```
-{up} {down} {left} {right}     move the cursor one character at a time
-{begin} {end}                  go to the begin / end of the current line
-{top} {bottom}                 go to the begin / end of the current file
-{cr}                           insert a break or empty line
-{tab}                          insert spaces as indentation
-{ldel} {rdel}                  delete the character at the left / right
-{cut} {copy} {paste} {delete}  operation over a line or block of lines
-{clrclip}                      clear the clipboard data
-{blkstart} {blkend}            mark the start / end of a block of lines
-{filename}                     insert the current filename
+{Up} {Down} {Left} {Right}     move the cursor one character at a time
+{Begin} {End}                  go to the begin / end of the current line
+{Top} {Bottom}                 go to the begin / end of the current file
+{NewLine}                      insert a break or empty line
+{Indent}                       insert spaces as indentation
+{DelLeft} {DelRight}           delete the character at the left / right
+{Cut} {Copy} {Paste} {Delete}  operation over a line or block of lines
+{ClearClip}                    clear the clipboard data
+{BlockStart} {BlockEnd}        mark the start / end of a block of lines
+{FileName}                     insert the current filename
 ```
 
-The symbol names are case insensitive - ie: `{ClrClip}` and `{clrclip}`
+The symbol names are case insensitive - ie: `{ClearClip}` and `{clearclip}`
 are equivalents.
 
 Additionally, you can repeat a symbol as in:
@@ -331,19 +338,19 @@ Additionally, you can repeat a symbol as in:
 ```
 
 Take into account that line endings in the macro are not translated
-to NewLine actions. Use `{cr}` for that.
+to NewLine actions. Use `{NewLine}` for that.
 
 If you need to insert the `{` or `}` characters in the text of the
-macro, just write `\{` and `\}`.
+macro, just write them as `\{` and `\}`.
 
 For example, a macro to insert a banner at the top of the document,
 could be written as:
 
 ```
-{top}{cr}{up}
-=============={cr}
-FloppySoftware{cr}
-=============={cr}
+{top}{newline}{up}
+=============={newline}
+FloppySoftware{newline}
+=============={newline}
 ```
 
 Some macro files are included as examples:
@@ -370,8 +377,8 @@ Adaptations
 
 The program adaptation is done by editing a small source code file.
 
-In this file, you must specify the key bindings for the editor actions,
-according to your preferences and / or keyboard, and complete a few C
+In this file, you must specify some configuration values according
+to your preferences and / or system, and complete a few C
 language functions to clear the screen, etc.
 
 As there are some adaptations already done, it's possible that your
@@ -393,8 +400,8 @@ Current CP/M adaptations are:
 - `te_px8`  : Epson PX-8 "Geneva".
 - `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard
               escape sequences.
-
-Adaptations for other OS are (they are distributed apart):
+			  
+Adaptations for other OS are (they are not distributed yet):
 - Windows 32 bit (25x80), compiled with Pelles C
   and its 'conio.h' library.
 - DOS (25x80), compiled with Turbo C, and
@@ -410,7 +417,7 @@ some `TE` generic options to your taste, if needed (its use
 is totally optional):
 
 ```
-TECF v1.00 / 18 Jan 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+TECF v1.20 / 01 Jul 2021 - (c) 2021 Miguel Garcia / FloppySoftware
 
 TE configuration tool.
 
@@ -469,16 +476,44 @@ Just a few rules:
 
 See my `CF` and `CF READER` projects for more information.
 
-The current supported options are the following:
+Each adaptation is supplied and patched with an initial configuration
+file that includes key bindings, etc.
+
+You should create your own configuration files if needed.
+
+The current supported options are the following (see `TE.CF`):
 
 ```
-# TE configuration
+# ========================================
+# TE configuration file
+# ----------------------------------------
+# IMPORTANT! This file is for TECF, the TE
+#            configuration tool.
+# ========================================
 
-# Screen height: 18..255 -- uncomment and change if needed
+# Configuration name
+#te.confName = "My own configuration"
+
+# Screen height: 8..255 or auto for CP/M 3
 #screen.rows = 25
 
-# Screen width: 64..255 -- uncomment and change if needed
+# Screen width: 64..255 or auto for CP/M 3
 #screen.columns = 80
+
+# Character for normal position in ruler
+#screen.rulerChar = "."
+
+# Character for tab stop position in ruler
+#screen.rulerTabChar = "!"
+
+# Character for vertical draws -- ie: help columns
+#screen.vertChar = "|"
+
+# Character for horizontal draws -- ie: status line
+#screen.horizChar = "-"
+
+# Character between line numbers and text
+screen.lineNumbersChar = " "
 
 # How many lines can edit: 256..4096 -- each
 # empty line occupies 2 bytes of RAM
@@ -501,11 +536,50 @@ editor.autoIndent = true
 # 7 characters in long
 editor.autoList = true
 editor.listBullets = "-*>"
+
+# Some keynames used in the UI
+#keyname.newLine = "ENTER"
+#keyname.escape = "ESC"
+
+# Key bindings, legal definitions are:
+# ^A   -> Ctrl-A         -> one control char.
+# ^A^X -> Ctrl-A, Ctrl-X -> two control chars.
+# ^AX  -> Ctrl-A, X      -> one control char., one char.
+#
+# Legal control characters are:
+# ^A..^Z ^[ ^\ ^] ^^ ^_ -> 1..31
+# ^?                    -> 127
+#key.up = ""
+#key.down = ""
+#key.left = ""
+#key.right = ""
+#key.begin = ""
+#key.end = ""
+#key.top = ""
+#key.bottom = ""
+#key.pgUp = ""
+#key.pgDown = ""
+#key.indent = ""
+#key.newLine = ""
+#key.escape = ""
+#key.delRight = ""
+#key.delLeft = ""
+#key.cut = ""
+#key.copy = ""
+#key.paste = ""
+#key.delete = ""
+#key.clearClip = ""
+#key.find = ""
+#key.findNext = ""
+#key.goLine = ""
+#key.wordLeft = ""
+#key.wordRight = ""
+#key.blockStart = ""
+#key.blockEnd = ""
+#key.blockUnset = ""
+#key.macro = ""
 ```
 
-In the future it will be possible to configure some platform / machine
-dependent values (ie - screen size), key bindings, memory macros,
-etc.
 
 License
 -------

@@ -45,6 +45,9 @@
 	26 Dec 2019 : Now K_INTRO is K_CR. Remove CRT_ESC_KEY.
 	14 Jan 2021 : Remove OPT_NUM.
 	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
+	04 Apr 2021 : Remove key bindings.
+	11 May 2021 : Remove CRT configuration values.
+	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
 	
 	Notes:
 
@@ -52,6 +55,12 @@
 	and a 32x90 CRT minus 1 line for system messages (it can be enabled
 	or disabled).
 */
+
+/* Default configuration values
+   ----------------------------
+*/
+#define CRT_DEF_ROWS 31
+#define CRT_DEF_COLS 90
 
 /* Options
    -------
@@ -63,22 +72,6 @@
 #define OPT_GOTO  1  /* Go to line # */
 #define OPT_BLOCK 1  /* Block selection */
 #define OPT_MACRO 1  /* Enable macros */
-
-/* Definitions
-   -----------
-*/
-#define CRT_NAME "Amstrad PCW"
-
-#asm
-
-CRT_ROWS: equ 31  ; CRT rows: 32 - 1 (system line)
-CRT_COLS: equ 90  ; CRT columns
-
-#endasm
-
-#define RULER_TAB     0x91 /* Ruler: Tab stop character - ie: ! */
-#define RULER_CHR     0x90 /* Ruler: Character - ie: . */
-#define SYS_LINE_SEP  0x9A /* System line separator character - ie: - */
 
 /* Include main code
    -----------------
@@ -92,48 +85,6 @@ CRT_COLS: equ 90  ; CRT columns
 CrtSetup()
 {
 	CrtSetupEx();
-
-	SetKey(K_UP,        31,    '\0', NULL);
-	SetKey(K_DOWN,      30,    '\0', NULL);
-	SetKey(K_LEFT,      CTL_A, '\0', NULL);
-	SetKey(K_RIGHT,     CTL_F, '\0', NULL);
-	SetKey(K_BEGIN,     CTL_V, '\0', "+");
-	SetKey(K_END,       28,    '\0', "-");
-	SetKey(K_TOP,       CTL_P, '\0', "F7");
-	SetKey(K_BOTTOM,    CTL_S, '\0', "F5");
-	SetKey(K_PGUP,      CTL_Q, '\0', "F3");
-	SetKey(K_PGDOWN,    CTL_Z, '\0', "F1");
-	SetKey(K_TAB,       CTL_I, '\0', "TAB");
-	SetKey(K_CR,        CTL_M, '\0', "RETURN");
-	SetKey(K_ESC,       ESC,   '\0', "EXIT");
-	SetKey(K_RDEL,      CTL_G, '\0', "DEL->");
-	SetKey(K_LDEL,      DEL,   '\0', "<-DEL");
-	SetKey(K_CUT,       CTL_U, '\0', "CUT");
-	SetKey(K_COPY,      CTL_R, '\0', "RELAY");
-	SetKey(K_PASTE,     CTL_W, '\0', "PASTE");
-	SetKey(K_DELETE,    CTL_D, '\0', NULL);
-	SetKey(K_CLRCLP,    CTL_T, '\0', NULL);
-#if OPT_FIND	
-	SetKey(K_FIND,      CTL_K, '\0', NULL);
-	SetKey(K_NEXT,      CTL_L, '\0', NULL);
-#endif
-#if OPT_GOTO
-	SetKey(K_GOTO,      CTL_J, '\0', NULL);
-#endif
-#if OPT_LWORD		
-	/*SetKey(K_LWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_RWORD	
-	/*SetKey(K_RWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_BLOCK	
-	SetKey(K_BLK_START, CTL_B, 'S', NULL);
-	SetKey(K_BLK_END,   CTL_B, 'E', NULL);
-	SetKey(K_BLK_UNSET, CTL_B, 'U', NULL);
-#endif
-#if OPT_MACRO	
-	SetKey(K_MACRO,     CTL_Y, '\0', NULL);
-#endif	
 }
 
 #asm

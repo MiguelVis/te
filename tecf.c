@@ -42,6 +42,12 @@
 		18 Jan 2021 : v1.00.
 		22 Feb 2021 : Added screen.rows and screen.columns.
 		22 Feb 2021 : v1.10.
+		04 Apr 2021 : Added key bindings.
+		06 Apr 2021 : Added screen characters for various purposes.
+		08 Apr 2021 : Added configuration name, key names.
+		09 Jun 2021 : Remove unused code. Min. screen height of 8 lines.
+		30 Jun 2021 : Added "auto" as legal value for screen.rows and screen.columns.
+		01 Jul 2021 : v1.20.
 
 	Notes:
 
@@ -77,23 +83,14 @@
 /* TE shared libraries
    -------------------
 */
-#asm
-
-; The following values are needed before including te_conf.c in
-; order to avoid errors in TECF compilation.
-
-CRT_ROWS: equ 0  ; CRT rows
-CRT_COLS: equ 0  ; CRT columns
-
-#endasm
-
+#include "te_keys.h"
 #include "te_conf.c"
 
 /* Project defs.
    -------------
 */
 #define APP_NAME    "TECF"
-#define APP_VERSION "v1.10 / 22 Feb 2021"
+#define APP_VERSION "v1.20 / 01 Jul 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE configuration tool."
 #define APP_USAGE   "tecf action arguments..."
@@ -103,7 +100,8 @@ CRT_COLS: equ 0  ; CRT columns
 #define APP_ACTION4 "\tdump [filename[.COM]] [> filename.CF]"
 #define APP_ACTION5 "Default value for \"filename\" is \"TE\"."
 
-#define CF_MIN_ROWS    18
+#define CF_MAX_NAME    31
+#define CF_MIN_ROWS    8
 #define CF_MAX_ROWS    255
 #define CF_MIN_COLS    64
 #define CF_MAX_COLS    255
@@ -112,6 +110,7 @@ CRT_COLS: equ 0  ; CRT columns
 #define CF_MIN_TABSIZE 1
 #define CF_MAX_TABSIZE 16
 #define CF_MAX_BULLETS 7
+#define CF_MAX_KEYNAME 7
 
 /* Globals
    -------
@@ -127,6 +126,7 @@ int com_cf;                     // Shift of configuration block in com_buf
 int conf_code;                  // Code returned by CF READER
 int conf_line;                  // Line number returned by CF READER
 char *conf_key;                 // Key string returned by CF READER
+char *conf_subkey;              // Subkey string from conf_key
 char *conf_val;                 // Value string return by CF READER
 
 /* Program entry
@@ -389,36 +389,160 @@ read_var(line, key, val)
 int line;
 char *key, *val;
 {
+	
+	/*printf("%s = %s\n", key, val);*/
+
 	conf_line = line;
 	conf_key = key;
 	conf_val = val;
 
-	if(key_match("screen.rows")) {
-		cf_rows = get_uint(CF_MIN_ROWS, CF_MAX_ROWS);
+	if(prefix_match("te")) {
+		if(subkey_match("confName")) {
+			get_str(cf_name, CF_MAX_NAME);
+		}
 	}
-	else if(key_match("screen.columns")) {
-		cf_cols = get_uint(CF_MIN_COLS, CF_MAX_COLS);
+	else if(prefix_match("screen")) {
+		if(subkey_match("rows")) {
+			cf_rows = (chk_str_auto() ? 0 : get_uint(CF_MIN_ROWS, CF_MAX_ROWS));
+		}
+		else if(subkey_match("columns")) {
+			cf_cols = (chk_str_auto() ? 0 : get_uint(CF_MIN_COLS, CF_MAX_COLS));
+		}
+		else if(subkey_match("rulerChar")) {
+			cf_rul_chr = get_char();
+		}
+		else if(subkey_match("rulerTabChar")) {
+			cf_rul_tab = get_char();
+		}
+		else if(subkey_match("vertChar")) {
+			cf_vert_chr = get_char();
+		}
+		else if(subkey_match("horizChar")) {
+			cf_horz_chr = get_char();
+		}
+		else if(subkey_match("lineNumbersChar")) {
+			cf_lnum_chr = get_char();
+		}
 	}
-	else if(key_match("editor.maxLines")) {
-		cf_mx_lines = get_uint(CF_MIN_LINES, CF_MAX_LINES);
+	else if(prefix_match("editor")) {
+		if(subkey_match("maxLines")) {
+			cf_mx_lines = get_uint(CF_MIN_LINES, CF_MAX_LINES);
+		}
+		else if(subkey_match("tabSize")) {
+			cf_tab_cols = get_uint(CF_MIN_TABSIZE, CF_MAX_TABSIZE);
+		}
+		else if(subkey_match("lineNumbers")) {
+			cf_num = get_bool();
+		}
+		else if(subkey_match("c_language")) {
+			cf_clang = get_bool();
+		}
+		else if(subkey_match("autoIndent")) {
+			cf_indent = get_bool();
+		}
+		else if(subkey_match("autoList")) {
+			cf_list = get_bool();
+		}
+		else if(subkey_match("listBullets")) {
+			get_str(cf_list_chr, CF_MAX_BULLETS);
+		}
 	}
-	else if(key_match("editor.tabSize")) {
-		cf_tab_cols = get_uint(CF_MIN_TABSIZE, CF_MAX_TABSIZE);
+	else if(prefix_match("keyname")) {
+		if(subkey_match("newLine")) {
+			get_str(cf_cr_name, CF_MAX_KEYNAME);
+		}
+		else if(subkey_match("escape")) {
+			get_str(cf_esc_name, CF_MAX_KEYNAME);
+		}
 	}
-	else if(key_match("editor.lineNumbers")) {
-		cf_num = get_bool();
-	}
-	else if(key_match("editor.c_language")) {
-		cf_clang = get_bool();
-	}
-	else if(key_match("editor.autoIndent")) {
-		cf_indent = get_bool();
-	}
-	else if(key_match("editor.autoList")) {
-		cf_list = get_bool();
-	}
-	else if(key_match("editor.listBullets")) {
-		strcpy(cf_list_chr, get_str(CF_MAX_BULLETS));
+	else if(prefix_match("key")) {
+		if(subkey_match("up")) {
+			get_key(K_UP);
+		}
+		else if(subkey_match("down")) {
+			get_key(K_DOWN);
+		}
+		else if(subkey_match("left")) {
+			get_key(K_LEFT);
+		}
+		else if(subkey_match("right")) {
+			get_key(K_RIGHT);
+		}
+		else if(subkey_match("begin")) {
+			get_key(K_BEGIN);
+		}
+		else if(subkey_match("end")) {
+			get_key(K_END);
+		}
+		else if(subkey_match("top")) {
+			get_key(K_TOP);
+		}
+		else if(subkey_match("bottom")) {
+			get_key(K_BOTTOM);
+		}
+		else if(subkey_match("pgUp")) {
+			get_key(K_PGUP);
+		}
+		else if(subkey_match("pgDown")) {
+			get_key(K_PGDOWN);
+		}
+		else if(subkey_match("indent")) {
+			get_key(K_TAB);
+		}
+		else if(subkey_match("newLine")) {
+			get_key(K_CR);
+		}
+		else if(subkey_match("escape")) {
+			get_key(K_ESC);
+		}
+		else if(subkey_match("delRight")) {
+			get_key(K_RDEL);
+		}
+		else if(subkey_match("delLeft")) {
+			get_key(K_LDEL);
+		}
+		else if(subkey_match("cut")) {
+			get_key(K_CUT);
+		}
+		else if(subkey_match("copy")) {
+			get_key(K_COPY);
+		}
+		else if(subkey_match("paste")) {
+			get_key(K_PASTE);
+		}
+		else if(subkey_match("delete")) {
+			get_key(K_DELETE);
+		}
+		else if(subkey_match("clearClip")) {
+			get_key(K_CLRCLP);
+		}
+		else if(subkey_match("find")) {
+			get_key(K_FIND);
+		}
+		else if(subkey_match("findNext")) {
+			get_key(K_NEXT);
+		}
+		else if(subkey_match("goLine")) {
+			get_key(K_GOTO);
+		}
+		else if(subkey_match("wordLeft")) {
+			get_key(K_LWORD);
+		}
+		else if(subkey_match("wordRight")) {
+			get_key(K_RWORD);
+		}
+		else if(subkey_match("blockStart")) {
+			get_key(K_BLK_START);
+		}
+		else if(subkey_match("blockEnd")) {
+			get_key(K_BLK_END);
+		}
+		else if(subkey_match("blockUnset")) {
+			get_key(K_BLK_UNSET);
+		}
+		else if(subkey_match("macro")) {
+			get_key(K_MACRO);
+		}
 	}
 
 	return 0;
@@ -434,11 +558,68 @@ char *s;
 	return strcmp(conf_key, s) == 0;
 }
 
+/* Compare current key prefix name from read_var()
+   and set conf_subkey on success.
+   -----------------------------------------------
+   Returns non zero if matchs, else 0
+*/
+prefix_match(s)
+char *s;
+{
+	char *pk;
+	
+	pk = conf_key;
+	
+	while(*s) {
+		if(*s != *pk) {
+			break;
+		}
+		
+		++s;
+		++pk;
+	}
+	
+	if(*s == '\0' && *pk == '.') {
+		conf_subkey = ++pk;
+		
+		return 1;
+	}
+	
+	return 0;
+}
+
+/* Compare current subkey name from read_var()
+   -------------------------------------------
+   Returns non zero if matchs, else 0
+*/
+subkey_match(s)
+char *s;
+{
+	return strcmp(conf_subkey, s) == 0;
+}
+
+/* Compare string from current key value
+   -------------------------------------
+*/
+chk_str(s)
+char *s;
+{
+	return strcmp(conf_val, s) == 0;
+}
+
+/* Compare string "auto" from current key value
+   --------------------------------------------
+*/
+chk_str_auto()
+{
+	return chk_str("auto");
+}
+
 /* Get unsigned int from current key value: 0..9999
    ------------------------------------------------
 */
-get_uint(n_max, n_min)
-int n_max, n_min;
+get_uint(n_min, n_max)
+int n_min, n_max;
 {
 	int n;
 	char *p;
@@ -455,7 +636,7 @@ int n_max, n_min;
 
 			n = atoi(conf_val);
 
-			if(n >= n_max && n <= n_min) {
+			if(n >= n_min && n <= n_max) {
 				return n;
 			}
 		}
@@ -467,25 +648,94 @@ int n_max, n_min;
 /* Get string from current key value, length: 1..max_len
    -----------------------------------------------------
 */
-get_str(max_len)
+get_str(s, max_len)
+char *s;
 int max_len;
 {
-	char *p;
 	int k;
 
 	k = strlen(conf_val);
 
 	if(k > 0 && k <= max_len) {
-		if((p = malloc(k + 1))) {
-			strcpy(p, conf_val);
+		strcpy(s, conf_val);
 
-			return p;
-		}
-
-		err_mem();
+		return s;
 	}
 
-	err_conf("empty string or too large");
+	err_conf("empty or too large string");
+}
+
+/* Get character from current key value: character or number 32..255
+   -----------------------------------------------------------------
+*/
+get_char()
+{
+	char s[2];
+	
+	if(isdigit(*conf_val)) {
+		return get_uint(32, 255);
+	}
+	
+	get_str(s, 1);
+	
+	return s[0];
+}
+
+/* Get key binding from current key value: ^A or ^A^X or ^AX
+   ---------------------------------------------------------
+*/
+get_key(key)
+int key;
+{
+	int ch;
+	
+	key -= 1000;
+	
+	if(*conf_val == '^') {
+
+		if((ch = get_key_ctl(conf_val[1]))) {
+			cf_keys[key] = ch;
+			
+			if(conf_val[2] == '\0') {
+				cf_keys_ex[key] = '\0';
+				return;
+			}
+			else if(conf_val[2] == '^') {			
+				if((ch = get_key_ctl(conf_val[3]))) {
+					cf_keys_ex[key] = ch;
+				}
+				
+				if(conf_val[4] == '\0') {
+					return;
+				}
+			}
+			else if(!islower(conf_val[2])) {
+				cf_keys_ex[key] = conf_val[2];
+				
+				if(conf_val[3] == '\0') {
+					return;
+				}
+			}
+		}
+	}
+	
+	err_conf("bad key binding definition");
+}
+
+get_key_ctl(ch)
+char ch;
+{
+	/* ^A..Z ^[ ^\ ^] ^^ ^_ */
+	if(ch >= 'A' && ch <= '_') {
+		return ch - '@';
+	}
+	
+	/* ^? */
+	if(ch == '?') {
+		return 0x7F;
+	}
+	
+	return 0;
 }
 
 /* Get boolean from current key value: 0..1
@@ -508,8 +758,16 @@ get_bool()
 */
 dump_cf()
 {
-	dump_uint("screen.rows", cf_rows);
-	dump_uint("screen.columns", cf_cols);
+	dump_str("te.confName", cf_name);
+	
+	dump_uint_auto("screen.rows", cf_rows);
+	dump_uint_auto("screen.columns", cf_cols);
+	dump_char("screen.rulerChar", cf_rul_chr);
+	dump_char("screen.rulerTabChar", cf_rul_tab);
+	dump_char("screen.vertChar", cf_vert_chr);
+	dump_char("screen.horizChar", cf_horz_chr);
+	dump_char("screen.lineNumbersChar", cf_lnum_chr);
+	
 	dump_uint("editor.maxLines", cf_mx_lines);
 	dump_uint("editor.tabSize", cf_tab_cols);
 	dump_bool("editor.lineNumbers", cf_num);
@@ -517,6 +775,39 @@ dump_cf()
 	dump_bool("editor.autoIndent", cf_indent);
 	dump_bool("editor.autoList", cf_list);
 	dump_str("editor.listBullets", cf_list_chr);
+	
+	dump_str("keyname.newLine", cf_cr_name);
+	dump_str("keyname.escape", cf_esc_name);
+	
+	dump_key("up", K_UP);
+	dump_key("down", K_DOWN);
+	dump_key("left", K_LEFT);
+	dump_key("right", K_RIGHT);
+	dump_key("begin", K_BEGIN);
+	dump_key("end", K_END);
+	dump_key("top", K_TOP);
+	dump_key("bottom", K_BOTTOM);
+	dump_key("pgUp", K_PGUP);
+	dump_key("pgDown", K_PGDOWN);
+	dump_key("indent", K_TAB);
+	dump_key("newLine", K_CR);
+	dump_key("escape", K_ESC);
+	dump_key("delRight", K_RDEL);
+	dump_key("delLeft", K_LDEL);
+	dump_key("cut", K_CUT);
+	dump_key("copy", K_COPY);
+	dump_key("paste", K_PASTE);
+	dump_key("delete", K_DELETE);
+	dump_key("clearClip", K_CLRCLP);
+	dump_key("find", K_FIND);
+	dump_key("findNext", K_NEXT);
+	dump_key("goLine", K_GOTO);
+	dump_key("wordLeft", K_LWORD);
+	dump_key("wordRight", K_RWORD);
+	dump_key("blockStart", K_BLK_START);
+	dump_key("blockEnd", K_BLK_END);
+	dump_key("blockUnset", K_BLK_UNSET);
+	dump_key("macro", K_MACRO);
 }
 
 /* Dump configuration variable as unsigned int
@@ -529,6 +820,21 @@ int val;
 	printf("%s = %d\n", key, val);
 }
 
+/* Dump configuration variable as unsigned int or string "auto"
+   ------------------------------------------------------------
+*/
+dump_uint_auto(key, val)
+char *key;
+int val;
+{
+	if(val) {
+		dump_uint(key, val);
+	}
+	else {
+		dump_str(key, "auto");
+	}
+}
+
 /* Dump configuration variable as string
    -------------------------------------
 */
@@ -536,6 +842,25 @@ dump_str(key, val)
 char *key, *val;
 {
 	printf("%s = \"%s\"\n", key, val);  // FIXME - escape quotes inside the string? Not suported by CF Reader yet!
+}
+
+/* Dump configuration variable as character
+   ----------------------------------------
+*/
+dump_char(key, val)
+char *key, val;
+{
+	char s[2];
+	
+	if(val > 126) {
+		dump_uint(key, val);
+	}
+	else {
+		s[0] = val;
+		s[1] = '\0';
+		
+		dump_str(key, s);
+	}
 }
 
 /* Dump configuration variable as boolean
@@ -546,6 +871,40 @@ char *key;
 int val;
 {
 	printf("%s = %s\n", key, val ? "true" : "false");
+}
+
+/* Dump configuration variable as key binding if set
+   -------------------------------------------------
+*/
+dump_key(name, key)
+char *name;
+int key;
+{
+	char def[5];
+	
+	key -= 1000;
+	
+	if(cf_keys[key]) {
+		def[0] = '^';
+		def[1] = (cf_keys[key] != 0x7F ? cf_keys[key] + '@' : '?');
+		
+		if(cf_keys_ex[key]) {
+			if(cf_keys_ex[key] < ' ' || cf_keys_ex[key] == 0x7F) {
+				def[2] = '^';
+				def[3] = (cf_keys_ex[key] != 0x7F ? cf_keys_ex[key] + '@' : '?');
+				def[4] = '\0';
+			}
+			else {
+				def[2] = cf_keys_ex[key];
+				def[3] = '\0';
+			}
+		}
+		else {
+			def[2] = '\0';
+		}
+		
+		printf("key.%s = \"%s\"\n", name, def);
+	}
 }
 
 /* Show usage and exit

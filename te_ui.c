@@ -35,6 +35,10 @@
 	31 Dec 2020 : Use NUM_SEP instead of space to separate line numbers from text.
 	04 Jan 2021 : Use configuration variables.
 	22 Feb 2021 : Removed CRT_ROWS, CRT_COLS.
+	04 Apr 2021 : Remove customized key names. Use key bindings from configuration.
+	05 Apr 2021 : Adapt HELP to last changes.
+	06 Apr 2021 : Use special screen characters from configuration instead of macros.
+	08 Apr 2021 : Get adaptation (port) name from configuration.
 */
 
 /* Read character from keyboard
@@ -133,19 +137,19 @@ Layout()
 	{
 		if(k++)
 		{
-			putchr(RULER_CHR);
+			putchr(cf_rul_chr);
 
 			if(k == cf_tab_cols)
 				k = 0;
 		}
 		else
-			putchr(RULER_TAB);
+			putchr(cf_rul_tab);
 	}
 
 	/* System line separator */
 	CrtLocate(cf_rows - 2, 0);
 
-	putchrx(SYS_LINE_SEP, cf_cols);
+	putchrx(cf_horz_chr, cf_cols);
 #endif
 }
 
@@ -447,7 +451,7 @@ int row, line;
 
 			if(cf_num) {
 						putint(format, line + 1);
-						putchr(NUM_SEP);
+						putchr(cf_lnum_chr);
 			}
 
 #if OPT_BLOCK
@@ -663,14 +667,14 @@ MenuHelp()
 
 	CrtLocate(BOX_ROW + 1, 0);
 
-	putstr("HELP for te & "); putstr(CRT_NAME); putln(":\n");
+	putln("HELP:\n");
 
 #if CRT_LONG
 
 	for(i = 0; help_items[i] != -1; ++i) {
 
-		// 12345678 123 12345678 (21 characters)
-		// BlkEnd   ^BE RETURN
+		// 123456789012345 (15 characters)
+		// BlkEnd     ^B^E
 
 		if((k = help_items[i])) {
 			if(*(s = GetKeyWhat(k)) == '?') {
@@ -679,29 +683,19 @@ MenuHelp()
 		}
 
 		if(k) {
-			putstr(s); putchrx(' ', 9 - strlen(s));
+			putstr(s); putchrx(' ', 11 - strlen(s));
 
 			k -= 1000;
 
-			if(keys[k] < 32) {
-				putchr('^'); putchr('@' + keys[k]);
-			}
-			else {
-				putint("%02x", keys[k]);
-			}
-
-			putchr(keys_ex[k] ? keys_ex[k] : ' ');
-
-			putchr(' ');
-
-			putstr((s = GetKeyName(k + 1000))); putchrx(' ', 8 - strlen(s));
+			MenuHelpCh(cf_keys[k]);
+			MenuHelpCh(cf_keys_ex[k]);
 		}
 		else {
-			putchrx(' ', 21);
+			putchrx(' ', 15);
 		}
 
 		if((i + 1) % 3) {
-			putstr(" | ");
+			putchr(' '); putchr(cf_vert_chr); putchr(' ');
 		}
 		else {
 			putchr('\n');
@@ -710,11 +704,27 @@ MenuHelp()
 
 #else
 
-	putstr("Sorry, no help is available in short format yet.");
+	putstr("Sorry, no help is available.");
 
 #endif
 
 	SysLineBack(NULL);
+}
+
+MenuHelpCh(ch)
+int ch;
+{
+	if(ch) {
+		if(ch < 32 || ch == 0x7F) {
+			putchr('^'); putchr(ch != 0x7F ? '@' + ch : '?');
+		}
+		else {
+			putchr(ch); putchr(' ');
+		}
+	}
+	else {
+		putchr(' '); putchr(' ');
+	}
 }
 
 /* Menu option: About
@@ -734,7 +744,7 @@ MenuAbout()
 	CenterText(row++, VERSION);
 	row++;
 	CenterText(row++, "Configured for");
-	CenterText(row++, CRT_NAME);
+	CenterText(row++, cf_name);
 	row++;
 	CenterText(row++, COPYRIGHT);
 	row++;
@@ -749,7 +759,7 @@ MenuAbout()
 	CenterText(row++, "te - Text Editor");
 	CenterText(row++, VERSION);
 	CenterText(row++, "Configured for");
-	CenterText(row++, CRT_NAME);
+	CenterText(row++, cf_name);
 	CenterText(row++, COPYRIGHT);
 	CenterText(row++, "www.floppysoftware.es");
 #endif

@@ -4,7 +4,7 @@
 
 	Key bindings.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -26,6 +26,8 @@
 	23 Jan 2019 : Added GetKeyWhat().
 	29 Jan 2019 : Added K_CLRCLP.
 	26 Dec 2019 : Now K_INTRO is K_CR. Add GetKeyName().
+	04 Apr 2021 : Remove customized key names. Use key bindings from configuration.
+	11 May 2021 : Update keys purposes.
 */
 
 /* Return key name
@@ -34,9 +36,13 @@
 GetKeyName(key)
 int key;
 {
-	key -= 1000;
+	switch(key)
+	{
+		case K_CR:  return cf_cr_name;
+		case K_ESC: return cf_esc_name;
+	}
 	
-	return (keys_name[key] ? keys_name[key] : "");
+	return "?";
 }
 
 /* Return key purpose
@@ -45,45 +51,47 @@ int key;
 GetKeyWhat(key)
 int key;
 {
+	/* Max. length of 8 chars., see MenuHelp() */
+	 
 	switch(key)
 	{
 		case K_UP:      return "Up";
 		case K_DOWN:    return "Down";
 		case K_LEFT:    return "Left";
 		case K_RIGHT:   return "Right";
-		case K_PGUP:    return "PgUp";
-		case K_PGDOWN:  return "PgDown";
 		case K_BEGIN:   return "Begin";
 		case K_END:     return "End";
 		case K_TOP:     return "Top";
 		case K_BOTTOM:  return "Bottom";
-		case K_TAB:     return "Tab";
+		case K_PGUP:    return "PgUp";
+		case K_PGDOWN:  return "PgDown";
+		case K_TAB:     return "Indent";
 		case K_CR:      return "NewLine";
 		case K_ESC:     return "Escape";
-		case K_RDEL:    return "Del->";
-		case K_LDEL:    return "<-Del";
+		case K_RDEL:    return "DelRight";
+		case K_LDEL:    return "DelLeft";
 		case K_CUT:     return "Cut";
 		case K_COPY:    return "Copy";
 		case K_PASTE:   return "Paste";
 		case K_DELETE:  return "Delete";
-		case K_CLRCLP:  return "ClrClip";
+		case K_CLRCLP:  return "ClearClip";
 #if OPT_FIND
 		case K_FIND:    return "Find";
-		case K_NEXT:    return "F.Next";
+		case K_NEXT:    return "FindNext";
 #endif
 #if OPT_GOTO
 		case K_GOTO:    return "GoLine";
 #endif
 #if OPT_LWORD
-		case K_LWORD:   return "<-Word";
+		case K_LWORD:   return "WordLeft";
 #endif
 #if OPT_RWORD
-		case K_RWORD:   return "Word->";
+		case K_RWORD:   return "WordRight";
 #endif
 #if OPT_BLOCK
-		case K_BLK_START:  return "BlkStart";
-		case K_BLK_END:    return "BlkEnd";
-		case K_BLK_UNSET:  return "BlkUnset";
+		case K_BLK_START:  return "BlockStart";
+		case K_BLK_END:    return "BlockEnd";
+		case K_BLK_UNSET:  return "BlockUnset";
 #endif
 #if OPT_MACRO
 		case K_MACRO:   return "Macro";
@@ -93,19 +101,20 @@ int key;
 	return "?";
 }
 
-/* Set key binding
-   ---------------
+/* Set key binding, if not previously set by TECF
+   ----------------------------------------------
    The parameter 'key1' should be a control character or 0x7F.
    The parameter 'key2' should be a printable character and is case insensitive (set it to 0 for single keys).
 */
-SetKey(func, key1, key2, keyname)
-int func, key1, key2; char *keyname;
+SetKey(func, key1, key2)
+int func, key1, key2;
 {
 	func -= 1000;
-
-	keys[func] = key1;
-	keys_ex[func] = toupper(key2);
-	keys_name[func] = keyname;
+	
+	if(!cf_keys[func]) {
+		cf_keys[func] = key1;
+		cf_keys_ex[func] = toupper(key2);
+	}
 }
 
 /* Return key from keyboard, according to key bindings
@@ -122,14 +131,16 @@ GetKey()
 	}
 
 	for(i = 0; i < KEYS_MAX; ++i) {
-		if(keys[i]) {
-			if(c == keys[i]) {
-				if(keys_ex[i]) {
+		if(cf_keys[i]) {
+			if(c == cf_keys[i]) {
+				if(cf_keys_ex[i]) {
 					x = toupper(CrtIn());
+					
+					/* TODO: try to optimize the following */
 
 					for(k = i; k < KEYS_MAX; ++k) {
-						if(c == keys[k]) {
-							if(x == keys_ex[k]) {
+						if(c == cf_keys[k]) {
+							if(x == cf_keys_ex[k]) {
 								return k + 1000;
 							}
 						}

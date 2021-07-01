@@ -34,6 +34,9 @@
 	20 Oct 2020 : 1st version from source for the Takeda Toshiya's CP/M emulator.
 	14 Jan 2021 : Remove OPT_NUM.
 	22 Feb 2021 : Move CRT_ROWS, CRT_COLS to assembler.
+	04 Apr 2021 : Remove key bindings.
+	11 May 2021 : Remove CRT configuration values.
+	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
 
 	Notes:
 
@@ -41,6 +44,12 @@
 
 	It needs to translate some keyboard codes.
 */
+
+/* Default configuration values
+   ----------------------------
+*/
+#define CRT_DEF_ROWS 25
+#define CRT_DEF_COLS 80
 
 /* Options
    -------
@@ -52,22 +61,6 @@
 #define OPT_GOTO  1  /* Go to line # */
 #define OPT_BLOCK 1  /* Block selection */
 #define OPT_MACRO 1  /* Enable macros */
-
-/* Definitions
-   -----------
-*/
-#define CRT_NAME "ANSI Terminal"
-
-#asm
-
-CRT_ROWS: equ 25  ; CRT rows
-CRT_COLS: equ 80  ; CRT columns
-
-#endasm
-
-#define RULER_TAB    '!'  /* Ruler: Tab stop character - ie: ! */
-#define RULER_CHR    '.'  /* Ruler: Character - ie: . */
-#define SYS_LINE_SEP '-'  /* System line separator character - ie: - */
 
 /* Include main code
    -----------------
@@ -81,48 +74,6 @@ CRT_COLS: equ 80  ; CRT columns
 CrtSetup()
 {
 	CrtSetupEx();
-
-	SetKey(K_UP,        CTL_E, '\0', "UP");
-	SetKey(K_DOWN,      CTL_X, '\0', "DOWN");
-	SetKey(K_LEFT,      CTL_S, '\0', "LEFT");
-	SetKey(K_RIGHT,     CTL_D, '\0', "RIGHT");
-	SetKey(K_BEGIN,     CTL_V, '\0', "HOME");
-	SetKey(K_END,       CTL_A, '\0', "END");
-	SetKey(K_TOP,       CTL_P, '\0', NULL);
-	SetKey(K_BOTTOM,    CTL_F, '\0', NULL);
-	SetKey(K_PGUP,      CTL_R, '\0', NULL);
-	SetKey(K_PGDOWN,    CTL_C, '\0', NULL);
-	SetKey(K_TAB,       CTL_I, '\0', "TAB");
-	SetKey(K_CR,        CTL_M, '\0', "ENTER");
-	SetKey(K_ESC,       ESC,   '\0', "ESC");
-	SetKey(K_RDEL,      DEL,   '\0', "DEL");
-	SetKey(K_LDEL,      CTL_H, '\0', "BS");
-	SetKey(K_CUT,       CTL_U, '\0', NULL);
-	SetKey(K_COPY,      CTL_O, '\0', NULL);
-	SetKey(K_PASTE,     CTL_W, '\0', NULL);
-	SetKey(K_DELETE,    CTL_G, '\0', NULL);
-	SetKey(K_CLRCLP,    CTL_T, '\0', NULL);
-#if OPT_FIND
-	SetKey(K_FIND,      CTL_K, '\0', NULL);
-	SetKey(K_NEXT,      CTL_L, '\0', NULL);
-#endif
-#if OPT_GOTO
-	SetKey(K_GOTO,      CTL_J, '\0', NULL);
-#endif
-#if OPT_LWORD
-	/*SetKey(K_LWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_RWORD
-	/*SetKey(K_RWORD,     '\0', '\0', NULL);*/
-#endif
-#if OPT_BLOCK
-	SetKey(K_BLK_START, CTL_B, 'S', NULL);
-	SetKey(K_BLK_END,   CTL_B, 'E', NULL);
-	SetKey(K_BLK_UNSET, CTL_B, 'U', NULL);
-#endif
-#if OPT_MACRO
-	SetKey(K_MACRO,     CTL_Y, '\0', NULL);
-#endif
 }
 
 #asm

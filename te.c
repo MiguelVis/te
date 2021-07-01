@@ -74,6 +74,9 @@
 				  Added automatic list.
 	04 Jan 2021 : Use configuration variables.
 	22 Feb 2021 : Removed CRT_ROWS, CRT_COLS.
+	04 Apr 2021 : Move key bindings to configuration. Remove customized key names.
+	30 Jun 2021 : Get CP/M version. Adjust auto rows and columns configuration values.
+	01 Jul 2021 : Check if macro is running to avoid auto-indentation and lists side effects.
 
 	Notes:
 
@@ -95,7 +98,13 @@
 /* TE definitions
    --------------
 */
-#include <te.h>
+#include "te.h"
+#include "te_keys.h"
+
+/* Operating system
+   ----------------
+*/
+int cpm_ver;  /* CP/M version */
 
 /* Array of text lines
    -------------------
@@ -174,13 +183,6 @@ FILE *mac_fp;  /* FP for a file macro, or NULL */
 
 #endif
 
-/* Key bindings
-   ------------
-*/
-unsigned char keys[KEYS_MAX];
-unsigned char keys_ex[KEYS_MAX];
-WORD keys_name[KEYS_MAX]; /* char *[] */
-
 /* Help items layout
    -----------------
 */
@@ -224,6 +226,13 @@ main(argc, argv)
 int argc, argv[];
 {
 	int i;
+	
+	/* Get CP/M version */
+	cpm_ver = bdos_a(0x0C, 0x0000);
+	
+	/* Adjust auto rows and columns configuration values */
+	cf_rows = GetScrConf(0, cf_rows, CRT_DEF_ROWS);
+	cf_cols = GetScrConf(1, cf_cols, CRT_DEF_COLS);
 	
 	/* Setup CRT */
 	CrtSetup();
@@ -326,6 +335,28 @@ int argc, argv[];
 
 	/* Exit */
 	return 0;
+}
+
+/* Get # of rows / columns on auto configuration value
+   ---------------------------------------------------
+*/
+GetScrConf(n, val, def_val)
+int n, val, def_val;
+{
+	unsigned char scb_pb[2];
+	
+	if(val == 0) {
+		val = def_val;
+		
+		if(cpm_ver >= 0x30) {
+			scb_pb[0] = (n == 0 ? 0x1C : 0x1A);
+			scb_pb[1] = 0;
+
+			val = bdos_a(0x31, scb_pb) + 1;
+		}
+	}
+	
+	return val;
 }
 
 /* Main loop
@@ -617,31 +648,40 @@ LoopCr()
 		++lp_cur;
 		
 		k = 0;
+		
+#if OPT_MACRO
+		if(!MacroRunning())
+		{
+#endif		
 
-		if(box_shc) {
-			
-			i = 0;
-			
-			if(cf_indent) {
-				while(ln_dat[i] == ' ') {
-					++i;
-				}
-			}
-
-			if(cf_list) {
-				if(strchr(cf_list_chr, ln_dat[i]) && ln_dat[i + 1] == ' ') {
-					i += 2;
-				}
-			}
-
-			if(i) {
-				k = i;
+			if(box_shc) {
 				
-				strcpy(ln_dat + i, lp_arr[lp_cur]);
+				i = 0;
+				
+				if(cf_indent) {
+					while(ln_dat[i] == ' ') {
+						++i;
+					}
+				}
 
-				ModifyLine(lp_cur, ln_dat);
+				if(cf_list) {
+					if(strchr(cf_list_chr, ln_dat[i]) && ln_dat[i + 1] == ' ') {
+						i += 2;
+					}
+				}
+
+				if(i) {
+					k = i;
+					
+					strcpy(ln_dat + i, lp_arr[lp_cur]);
+
+					ModifyLine(lp_cur, ln_dat);
+				}
 			}
+		
+#if OPT_MACRO
 		}
+#endif			
 
 		if(box_shr < box_rows - 1) {
 

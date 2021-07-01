@@ -56,6 +56,11 @@
 	18 Jan 2021 : v1.50
 	22 Feb 2021 : Remove CRT_COLS.
 	22 Feb 2021 : v1.60
+	04 Apr 2021 : Added K_CR_NAME, K_ESC_NAME.
+	05 Apr 2021 : Move key defs. to te_keys.h.
+	09 Jun 2021 : Remove RULER_TAB, RULER_CHR, SYS_LINE_SEP, NUM_SEP.
+	30 Jun 2021 : Add CRT_DEF_ROWS, CRT_DEF_COLS.
+	01 Jul 2021 : v1.70
 
 	Notes:
 
@@ -65,7 +70,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.60 / 22 Feb 2021 for CP/M"
+#define VERSION "v1.70 / 01 Jul 2021 for CP/M"
 
 /* Copyright
    ---------
@@ -75,6 +80,14 @@
 /* Default options
    ---------------
 */
+#ifndef CRT_DEF_ROWS
+#define CRT_DEF_ROWS 24 /* Default screen rows */
+#endif
+
+#ifndef CRT_DEF_COLS
+#define CRT_DEF_COLS 80 /* Default screen columns */
+#endif
+
 #ifndef OPT_LWORD
 #define OPT_LWORD  1  /* Go to word on the left */
 #endif
@@ -113,27 +126,11 @@
 /* Layout characters
    -----------------
 */
-#ifndef RULER_TAB
-#define RULER_TAB    '!'  /* Ruler: Tab stop character */
-#endif
-
-#ifndef RULER_CHR
-#define RULER_CHR    '.'  /* Ruler: Character */
-#endif
-
-#ifndef SYS_LINE_SEP
-#define SYS_LINE_SEP '-'  /* System line separator character */
-#endif
-
 #if CRT_CAN_REV
 #else
 #ifndef BLOCK_CHR
 #define BLOCK_CHR    '*'  /* Character to mark lines as selected, when CRT_CAN_REV == 0 */
 #endif
-#endif
-
-#ifndef NUM_SEP
-#define NUM_SEP      '|'  /* Character to separate line numbers from text, when OPT_NUM == 1 */
 #endif
 
 /* More defs.
@@ -175,78 +172,9 @@
 #define MAC_END     '}'  /* Right delimiter for symbol names in macros */
 #define MAC_SEP     ':'  /* Separator between symbol names and # of repeats */
 #define MAC_ESCAPE  '\\' /* For escaped characters in macros */
-#define MAC_SYM_MAX  9   /* Max. length of macro symbol name in characters + '\0' */
+#define MAC_SYM_MAX 11   /* Max. length of macro symbol name in characters + '\0' */
 #define MAC_FTYPE   ".m" /* Default filetype for macro files */
 
 #endif
-
-/* Key function codes
-   ------------------
-*/
-#define K_UP	    1000
-#define K_DOWN	    1001
-#define K_LEFT	    1002
-#define K_RIGHT	    1003
-#define K_BEGIN	    1004
-#define K_END	    1005
-#define K_TOP       1006
-#define K_BOTTOM    1007
-#define K_PGUP	    1008
-#define K_PGDOWN    1009
-#define K_TAB       1010
-#define K_CR	    1011
-#define K_ESC	    1012
-#define K_RDEL	    1013
-#define K_LDEL      1014
-#define K_CUT       1015
-#define K_COPY      1016
-#define K_PASTE     1017
-#define K_DELETE    1018
-#define K_CLRCLP    1019
-#define K_FIND      1020
-#define K_NEXT      1021
-#define K_GOTO      1022
-#define K_LWORD     1023
-#define K_RWORD     1024
-#define K_BLK_START 1025
-#define K_BLK_END   1026
-#define K_BLK_UNSET 1027
-#define K_MACRO     1028
-
-#define KEYS_MAX    29   /* Max. # of key bindings */
-
-/* Control characters
-   ------------------
-*/
-#define CTL_A 1
-#define CTL_B 2
-#define CTL_C 3
-#define CTL_D 4
-#define CTL_E 5
-#define CTL_F 6
-#define CTL_G 7
-#define CTL_H 8
-#define CTL_I 9
-#define CTL_J 10
-#define CTL_K 11
-#define CTL_L 12
-#define CTL_M 13
-#define CTL_N 14
-#define CTL_O 15
-#define CTL_P 16
-#define CTL_Q 17
-#define CTL_R 18
-#define CTL_S 19
-#define CTL_T 20
-#define CTL_U 21
-#define CTL_V 22
-#define CTL_W 23
-#define CTL_X 24
-#define CTL_Y 25
-#define CTL_Z 26
-
-#define ZERO  0
-#define ESC   27
-#define DEL   127
 
 
