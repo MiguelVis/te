@@ -5,7 +5,7 @@ v1.70 / 01 Jul 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
-[http://www.floppysoftware.es/](www.floppysoftware.es)
+[http://www.floppysoftware.es/](http://www.floppysoftware.es)
 
 **NOTE**: This project has been extracted from
 my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
