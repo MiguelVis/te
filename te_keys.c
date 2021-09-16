@@ -28,6 +28,7 @@
 	26 Dec 2019 : Now K_INTRO is K_CR. Add GetKeyName().
 	04 Apr 2021 : Remove customized key names. Use key bindings from configuration.
 	11 May 2021 : Update keys purposes.
+	10 Jul 2021 : Remove SetKey().
 */
 
 /* Return key name
@@ -99,22 +100,6 @@ int key;
 	}
 
 	return "?";
-}
-
-/* Set key binding, if not previously set by TECF
-   ----------------------------------------------
-   The parameter 'key1' should be a control character or 0x7F.
-   The parameter 'key2' should be a printable character and is case insensitive (set it to 0 for single keys).
-*/
-SetKey(func, key1, key2)
-int func, key1, key2;
-{
-	func -= 1000;
-	
-	if(!cf_keys[func]) {
-		cf_keys[func] = key1;
-		cf_keys_ex[func] = toupper(key2);
-	}
 }
 
 /* Return key from keyboard, according to key bindings

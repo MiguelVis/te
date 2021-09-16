@@ -77,6 +77,7 @@
 	04 Apr 2021 : Move key bindings to configuration. Remove customized key names.
 	30 Jun 2021 : Get CP/M version. Adjust auto rows and columns configuration values.
 	01 Jul 2021 : Check if macro is running to avoid auto-indentation and lists side effects.
+	06 Jul 2021 : Optimize LoopCr(), LoopLeftDel(), LoopRightDel() a bit.
 
 	Notes:
 
@@ -619,27 +620,31 @@ LoopPgDown()
 */
 LoopCr()
 {
-	int ok, rs;
+	int ok;
 	int i, k;
 	
 	if(box_shc) {
 		if(ln_dat[box_shc]) {
 			/* Cursor is in the middle of the line */
 			if((ok = SplitLine(lp_cur, box_shc))) {
-				rs = 1;
+				CrtClearEol();
 			}
 		}
 		else {
 			/* Cursor is at the end of the line */
-			if((ok = AppendLine(lp_cur, NULL))) {
-				rs = 0;
-			}
+			ok = AppendLine(lp_cur, NULL);
 		}
 	}
 	else {
 		/* Cursor is in first column */
 		if((ok = InsertLine(lp_cur, NULL))) {
-			rs = 1;
+			if(ln_dat[0]) {
+				/* Line is not empty */
+				CrtClearEol();
+			}
+			/* else { */
+				/* Line is empty */
+			/* } */
 		}
 	}
 
@@ -687,7 +692,7 @@ LoopCr()
 
 			++box_shr;
 
-			Refresh(box_shr - rs, lp_cur - rs);
+			Refresh(box_shr, lp_cur);
 		}
 		else {
 			Refresh(0, lp_cur - box_rows + 1);
@@ -971,12 +976,14 @@ LoopLeftDel()
 	char *p;
 	int ok, rs, pos;
 
-	p = lp_arr[lp_cur];
-
-	if(*p) {
+	if(ln_dat[0]) {
+		/* Line is not empty */
+		
 		p = lp_arr[lp_cur - 1];
 
 		if(*p) {
+			/* Previous line is not empty */
+			
 			pos = strlen(p);
 
 			if((ok = JoinLines(lp_cur - 1))) {
@@ -984,6 +991,8 @@ LoopLeftDel()
 			}
 		}
 		else {
+			/* Previous line is empty */
+			
 			if((ok = DeleteLine(lp_cur - 1))) {
 				rs = 0;
 				pos = 0;
@@ -991,6 +1000,8 @@ LoopLeftDel()
 		}
 	}
 	else {
+		/* Line is empty */
+		
 		if((ok = DeleteLine(lp_cur))) {
 			rs = 1;
 			pos = 999;
@@ -1024,26 +1035,42 @@ LoopRightDel()
 {
 	char *p;
 	int ok, rs;
+	
+	p = lp_arr[lp_cur + 1];
 
-	p = lp_arr[lp_cur];
-
-	if(*p) {
-		p = lp_arr[lp_cur + 1];
+	if(ln_dat[0]) {
+		/* Line is not empty */
 
 		if(*p) {
+			/* Next line is not empty */
+			
 			if((ok = JoinLines(lp_cur))) {
 				rs = 0;
 			}
 		}
 		else {
+			/* Next line is empty */
+			
 			if((ok = DeleteLine(lp_cur + 1))) {
 				rs = 1;
 			}
 		}
 	}
 	else {
+		/* Line is empty */
+		
 		if((ok = DeleteLine(lp_cur))) {
-			rs = 0;
+
+			if(*p) {
+				/* Next line is not empty */
+				
+				rs = 0;
+			}
+			else {
+				/* Next line is empty */
+				
+				rs = 1;
+			}
 		}
 	}
 

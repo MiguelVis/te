@@ -28,6 +28,7 @@
 	29 Dec 2018 : Added MacroRunning().
 	26 Dec 2019 : Now K_INTRO is K_CR.
 	01 Jul 2021 : Change macro symbol names to match key bindings names.
+	06 Jul 2021 : Optimize MacroGet() a bit.
 */
 
 /* Run a macro from file
@@ -118,38 +119,39 @@ MacroGetRaw()
 MacroGet()
 {
 	int i, n, ch;
-	char sym[MAC_SYM_MAX];
+	char sym[MAC_SYM_SIZ];
 
 	/* Continue if there is a character available */
 	if((ch = MacroGetRaw()))
 	{
-		/* Check for escaped characters */
-		if(ch == MAC_ESCAPE)
+		/* Return character if it's not the start of a symbol */
+		if(ch != MAC_START)
 		{
-			if((ch = MacroGetRaw()))
+			/* Check for escaped characters */
+			if(ch != MAC_ESCAPE)
 			{
 				ForceCh(ch);
 			}
 			else
 			{
-				/* Error: missing escaped character */
-				ErrLine("Bad escape sequence");
+				if((ch = MacroGetRaw()))
+				{
+					ForceCh(ch);
+				}
+				else
+				{
+					/* Error: missing escaped character */
+					ErrLine("Bad escape sequence");
 
-				MacroStop();
+					MacroStop();
+				}
 			}
 
 			return;
 		}
 
-		/* Return character if it's not the start of a symbol */
-		if(ch != MAC_START)
-		{
-			ForceCh(ch);
-			return;
-		}
-
 		/* Get symbol name like {up} or {up:12} --> "up" */
-		for(i = 0; isalpha(ch = MacroGetRaw()) && i < MAC_SYM_MAX - 1; ++i)
+		for(i = 0; isalpha(ch = MacroGetRaw()) && i < MAC_SYM_MAX; ++i)
 		{
 			sym[i] = tolower(ch);
 		}

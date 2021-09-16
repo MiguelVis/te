@@ -61,6 +61,8 @@
 	09 Jun 2021 : Remove RULER_TAB, RULER_CHR, SYS_LINE_SEP, NUM_SEP.
 	30 Jun 2021 : Add CRT_DEF_ROWS, CRT_DEF_COLS.
 	01 Jul 2021 : v1.70
+	05 Jul 2021 : Added OPT_Z80.
+	06 Jul 2021 : Added MAC_SYM_SIZ. Remove MAX_LINES.
 
 	Notes:
 
@@ -86,6 +88,10 @@
 
 #ifndef CRT_DEF_COLS
 #define CRT_DEF_COLS 80 /* Default screen columns */
+#endif
+
+#ifndef OPT_Z80
+#define OPT_Z80    0  /* Write some things as Z80 assembler */
 #endif
 
 #ifndef OPT_LWORD
@@ -136,8 +142,6 @@
 /* More defs.
    ----------
 */
-#define MAX_LINES  512   /* Max. # of text lines: each empty line uses 2 bytes with the Z80 */
-
 #define FORCED_MAX 128   /* Keyboard forced entry buffer size (for paste, tabs, etc.) */
 
 #define FIND_MAX   32    /* Find string buffer size */
@@ -172,7 +176,8 @@
 #define MAC_END     '}'  /* Right delimiter for symbol names in macros */
 #define MAC_SEP     ':'  /* Separator between symbol names and # of repeats */
 #define MAC_ESCAPE  '\\' /* For escaped characters in macros */
-#define MAC_SYM_MAX 11   /* Max. length of macro symbol name in characters + '\0' */
+#define MAC_SYM_MAX 10   /* Max. length of macro symbol name in characters */
+#define MAC_SYM_SIZ 11   /* MAC_SYM_MAX + '\0' */
 #define MAC_FTYPE   ".m" /* Default filetype for macro files */
 
 #endif

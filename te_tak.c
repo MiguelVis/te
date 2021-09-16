@@ -49,6 +49,7 @@
 	04 Apr 2021 : Remove key bindings.
 	11 May 2021 : Remove CRT configuration values.
 	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
+	06 Jul 2021 : Optimize CrtOut().
 
 	Notes:
 
@@ -124,14 +125,12 @@ CrtReset()
 */
 #asm
 CrtOut:
+	ld   c,l
 	ld   a,l
 	cp   10
-	jr   nz,CrtOutRaw
-	ld   c,13
+	jp   nz,BiosConout
 	call BiosConout
-	ld   l,10
-CrtOutRaw:
-	ld   c,l
+	ld   c,13
 	jp   BiosConout
 #endasm
 

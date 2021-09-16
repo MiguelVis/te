@@ -39,6 +39,7 @@
 	05 Apr 2021 : Adapt HELP to last changes.
 	06 Apr 2021 : Use special screen characters from configuration instead of macros.
 	08 Apr 2021 : Get adaptation (port) name from configuration.
+	05 Jul 2021 : Support for OPT_Z80.
 */
 
 /* Read character from keyboard
@@ -65,6 +66,36 @@ int ch;
 /* Print character on screen X times
    ---------------------------------
 */
+#if OPT_Z80
+/* putchrx(ch, n) */
+/* int ch, n;     */
+#asm
+putchrx:
+	pop  bc
+	pop  de
+	pop  hl
+	push hl
+	push de
+	push bc
+
+putchrx1:	
+	ld   a,d
+	or   e
+	ret  z
+	
+	dec  de
+	
+	push de
+	push hl
+	
+	call CrtOut
+	
+	pop  hl
+	pop  de
+	
+	jr   putchrx1
+#endasm
+#else
 putchrx(ch, n)
 int ch, n;
 {
@@ -72,16 +103,48 @@ int ch, n;
 		putchr(ch);
 	}
 }
+#endif
 
 /* Print string on screen
    ----------------------
 */
+#if OPT_Z80
+/* putstr(s) */
+/* char *s;  */
+#asm
+putstr:
+	pop  bc
+	pop  hl
+	push hl
+	push bc
+	
+putstr1:
+	ld   a,(hl)
+	or   a
+	ret  z
+	
+	inc  hl
+	push hl
+	
+	ld   h,0
+	ld   l,a
+	push hl
+	
+	call CrtOut
+	
+	pop  de
+	pop  hl
+	
+	jr   putstr1
+#endasm
+#else
 putstr(s)
 char *s;
 {
 	while(*s)
 		putchr(*s++);
-}
+}		
+#endif		
 
 /* Print string + '\n' on screen
    -----------------------------
