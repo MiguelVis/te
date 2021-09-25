@@ -1,3 +1,4 @@
+{# docblock for a C function}
 {begin}{newline}{up}
 /**{newline}
  * @fn     [prototype]{newline}

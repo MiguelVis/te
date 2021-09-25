@@ -1,3 +1,4 @@
+{# docblock for a C language file}
 {top}{newline}{up}
 /**{newline}
  * @file   {filename}{newline}
