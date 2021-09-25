@@ -314,7 +314,7 @@ JOIN.MAC   you must enter JOIN.MAC
 There are some special symbols you can use in your macros:
 
 ```
-{# comment}                    comments, the are ignored
+{# comment}                    comments, they are ignored
 {Up} {Down} {Left} {Right}     move the cursor one character at a time
 {Begin} {End}                  go to the begin / end of the current line
 {Top} {Bottom}                 go to the begin / end of the current file
