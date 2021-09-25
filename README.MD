@@ -1,19 +1,16 @@
 te
 ==
 
-v1.70 / 01 Jul 2021 for CP/M
+v1.71 / 25 Sep 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 [http://www.floppysoftware.es/](http://www.floppysoftware.es)
 
-**NOTE**: This project has been extracted from
-my [RetroProjects](https://github.com/MiguelVis/RetroProjects) repository.
-
 Introduction
 ------------
 
-The `te` text editor is small, humble, and useful.
+The `te` text editor is small, humble and useful.
 
 It edits the full text in memory, so your system must leave enough
 free TPA for the text, after `te` is loaded and running.
@@ -23,7 +20,8 @@ It's screen oriented, and can be easily adapted to a lot of computers.
 It's written in the C language, and there are ports for various
 operating systems: CP/M, DOS, Windows and GNU/Linux.
 
-I use [MESCC](https://github.com/MiguelVis/mescc) to compile it for CP/M.
+I use [MESCC](https://github.com/MiguelVis/mescc) to compile it for CP/M
+and the Z80 cpu.
 
 ![te image](http://www.floppysoftware.es/images/cpm-te.jpg "te image")
 
@@ -316,6 +314,7 @@ JOIN.MAC   you must enter JOIN.MAC
 There are some special symbols you can use in your macros:
 
 ```
+{# comment}                    comments, the are ignored
 {Up} {Down} {Left} {Right}     move the cursor one character at a time
 {Begin} {End}                  go to the begin / end of the current line
 {Top} {Bottom}                 go to the begin / end of the current file
@@ -347,6 +346,7 @@ For example, a macro to insert a banner at the top of the document,
 could be written as:
 
 ```
+{# this is a macro example}
 {top}{newline}{up}
 =============={newline}
 FloppySoftware{newline}
@@ -400,7 +400,7 @@ Current CP/M adaptations are:
 - `te_px8`  : Epson PX-8 "Geneva".
 - `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard
               escape sequences.
-			  
+
 Adaptations for other OS are (they are not distributed yet):
 - Windows 32 bit (25x80), compiled with Pelles C
   and its 'conio.h' library.
