@@ -4,7 +4,7 @@
 
 	Edit line.
 
-	Copyright (c) 2015-2020 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -37,6 +37,7 @@
 	26 Dec 2019 : Now K_INTRO is K_CR.
 	01 Mar 2020 : Added CLANG support. Set fe_forced flag in ForceGetCh().
 	04 Jan 2021 : Use configuration variables.
+	25 Sep 2021 : Ignore '\0' characters comming from macro comments. Use editln variable.
 */
 
 /* Edit current line
@@ -47,6 +48,9 @@ BfEdit()
 {
 	int i, ch, len, run, upd_lin, upd_col, upd_now, upd_cur, spc, old_len;
 	char *buf;
+	
+	/* Tell we are editing */
+	editln = 1;
 
 	/* Get current line contents */
 	strcpy(ln_dat, lp_arr[lp_cur]);
@@ -102,7 +106,12 @@ BfEdit()
 		}
 
 		/* Get character and do action */
+#if OPT_MACRO
+		while((ch = ForceGetCh()) == 0)
+			;
+#else
 		ch = ForceGetCh();
+#endif
 
 #if OPT_BLOCK
 
@@ -382,6 +391,9 @@ BfEdit()
 		/* Changes are not saved */
 		lp_chg = 1;
 	}
+	
+	/* Tell we are not editing */
+	editln = 0;
 
 	/* Return last character entered */
 	return ch;

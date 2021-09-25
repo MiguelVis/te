@@ -40,6 +40,7 @@
 	06 Apr 2021 : Use special screen characters from configuration instead of macros.
 	08 Apr 2021 : Get adaptation (port) name from configuration.
 	05 Jul 2021 : Support for OPT_Z80.
+	25 Sep 2021 : Added SysLineEdit(). Fix URLs.
 */
 
 /* Read character from keyboard
@@ -244,6 +245,14 @@ char *s;
 
 	/* Set flag for Loop() */
 	sysln = 1;
+}
+
+/* Print message when editing
+   --------------------------
+*/
+SysLineEdit()
+{
+	SysLine(GetKeyName(K_ESC));	putstr(" = menu");
 }
 
 /* Print message on system line and wait
@@ -811,8 +820,8 @@ MenuAbout()
 	row++;
 	CenterText(row++, COPYRIGHT);
 	row++;
-	CenterText(row++, "www.floppysoftware.es");
-	CenterText(row++, "cpm-connections.blogspot.com");
+	CenterText(row++, "http://www.floppysoftware.es");
+	CenterText(row++, "https://cpm-connections.blogspot.com");
 	CenterText(row  , "floppysoftware@gmail.com");
 #else
 	row = BOX_ROW;

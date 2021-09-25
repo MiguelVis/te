@@ -4,7 +4,7 @@
 
 	Errors.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -23,6 +23,7 @@
 	Changes:
 
 	30 Jan 2018 : Extracted from te.c.
+	25 Sep 2021 : Restore system message and cursor position when editing in ErrLine().
 */
 
 /* Print error message and wait for a key press
@@ -32,6 +33,16 @@ ErrLine(s)
 char *s;
 {
 	SysLineCont(s);
+	
+	/* Restore system message and cursor position when editing */
+	if(editln)
+	{
+		SysLineEdit();
+		
+		sysln = 0;
+		
+		CrtLocate(BOX_ROW + box_shr, box_shc + cf_num);
+	}
 }
 
 /* No memory error

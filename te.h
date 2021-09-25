@@ -63,6 +63,7 @@
 	01 Jul 2021 : v1.70
 	05 Jul 2021 : Added OPT_Z80.
 	06 Jul 2021 : Added MAC_SYM_SIZ. Remove MAX_LINES.
+	25 Sep 2021 : v1.71
 
 	Notes:
 
@@ -72,7 +73,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.70 / 01 Jul 2021 for CP/M"
+#define VERSION "v1.71 / 25 Sep 2021 for CP/M"
 
 /* Copyright
    ---------
@@ -91,7 +92,7 @@
 #endif
 
 #ifndef OPT_Z80
-#define OPT_Z80    0  /* Write some things as Z80 assembler */
+#define OPT_Z80    1  /* Write some things as Z80 assembler */
 #endif
 
 #ifndef OPT_LWORD

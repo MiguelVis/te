@@ -78,6 +78,7 @@
 	30 Jun 2021 : Get CP/M version. Adjust auto rows and columns configuration values.
 	01 Jul 2021 : Check if macro is running to avoid auto-indentation and lists side effects.
 	06 Jul 2021 : Optimize LoopCr(), LoopLeftDel(), LoopRightDel() a bit.
+	25 Sep 2021 : Add editln variable. Use SysLineEdit() when editing.
 
 	Notes:
 
@@ -164,6 +165,11 @@ int fe_forced; /* Flag: true if forced character on input */
    -----------
 */
 int sysln;    /* NZ when written - for Loop() */
+
+/* Edit line
+   ---------
+*/
+int editln;   /* NZ when editing line - for ErrLine() */
 
 #if OPT_FIND
 
@@ -385,7 +391,7 @@ Loop()
 		/* Refresh system line message if it changed */
 		if(sysln)
 		{
-			SysLine(GetKeyName(K_ESC));	putstr(" = menu");
+			SysLineEdit();
 
 			sysln = 0;
 		}
