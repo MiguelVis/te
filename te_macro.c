@@ -4,7 +4,7 @@
 
 	Macros.
 
-	Copyright (c) 2015-2019 Miguel Garcia / FloppySoftware
+	Copyright (c) 2015-2021 Miguel Garcia / FloppySoftware
 
 	This program is free software; you can redistribute it and/or modify it
 	under the terms of the GNU General Public License as published by the
@@ -29,6 +29,7 @@
 	26 Dec 2019 : Now K_INTRO is K_CR.
 	01 Jul 2021 : Change macro symbol names to match key bindings names.
 	06 Jul 2021 : Optimize MacroGet() a bit.
+	25 Sep 2021 : Added MacroIsCmdChar(). Allow comments as {# comment}. Send '\0' from MacroStop().
 */
 
 /* Run a macro from file
@@ -75,7 +76,7 @@ MacroStop()
 	mac_fp = /*mac_str =*/ NULL;
 
 	/* Flag end of input */
-	//ForceCh(K_EOF);
+	ForceCh('\0');
 }
 
 /* Read raw character from macro input
@@ -111,6 +112,15 @@ MacroGetRaw()
 
 	/* No character available */
 	return '\0';
+}
+
+/* Check if a character is legal for symbol name
+   ---------------------------------------------
+*/
+MacroIsCmdChar(ch)
+char ch;
+{
+	return isalpha(ch) || ch == '#';
 }
 
 /* Process a macro input unit
@@ -151,7 +161,7 @@ MacroGet()
 		}
 
 		/* Get symbol name like {up} or {up:12} --> "up" */
-		for(i = 0; isalpha(ch = MacroGetRaw()) && i < MAC_SYM_MAX; ++i)
+		for(i = 0; MacroIsCmdChar(ch = MacroGetRaw()) && i < MAC_SYM_MAX; ++i)
 		{
 			sym[i] = tolower(ch);
 		}
@@ -179,52 +189,73 @@ MacroGet()
 				n = 1;
 			}
 
-			if(n && ch == MAC_END)
+			if(n)
 			{
-				/* Do command action */
-				ch = 0;
-
-				if     (MatchStr(sym, "up"))         ch = K_UP;
-				else if(MatchStr(sym, "down"))       ch = K_DOWN;
-				else if(MatchStr(sym, "left"))       ch = K_LEFT;
-				else if(MatchStr(sym, "right"))      ch = K_RIGHT;
-				else if(MatchStr(sym, "begin"))      ch = K_BEGIN;
-				else if(MatchStr(sym, "end"))        ch = K_END;
-				else if(MatchStr(sym, "top"))        ch = K_TOP;
-				else if(MatchStr(sym, "bottom"))     ch = K_BOTTOM;
-				else if(MatchStr(sym, "newline"))    ch = K_CR;
-				else if(MatchStr(sym, "indent"))     ch = K_TAB;
-				else if(MatchStr(sym, "delright"))   ch = K_RDEL;
-				else if(MatchStr(sym, "delleft"))    ch = K_LDEL;
-				else if(MatchStr(sym, "cut"))        ch = K_CUT;
-				else if(MatchStr(sym, "copy"))       ch = K_COPY;
-				else if(MatchStr(sym, "paste"))      ch = K_PASTE;
-				else if(MatchStr(sym, "delete"))     ch = K_DELETE;
-				else if(MatchStr(sym, "clearclip"))  ch = K_CLRCLP;
-
-#if OPT_BLOCK
-				else if(MatchStr(sym, "blockstart")) ch = K_BLK_START;
-				else if(MatchStr(sym, "blockend"))   ch = K_BLK_END;
-#endif
-
-				if(ch)
+				/* Check for comments */
+				if(ch == ' ')
 				{
-					while(n--)
+					if((MatchStr(sym, "#")))
 					{
-						if(ForceCh(ch))
-							break;
-					}
+						while((ch = MacroGetRaw()))
+						{
+							if(ch == MAC_END)
+							{
+								ForceCh('\0');
 
-					return;
+								return;
+							}
+						}
+					}
 				}
 
-				/* Special commands */
-				if(MatchStr(sym, "filename"))
+				/* Check for commands */
+				if(ch == MAC_END)
 				{
-					while(n--)
-						ForceStr(CurrentFile());
+					/* Do command action */
+					ch = 0;
 
-					return;
+					if     (MatchStr(sym, "up"))         ch = K_UP;
+					else if(MatchStr(sym, "down"))       ch = K_DOWN;
+					else if(MatchStr(sym, "left"))       ch = K_LEFT;
+					else if(MatchStr(sym, "right"))      ch = K_RIGHT;
+					else if(MatchStr(sym, "begin"))      ch = K_BEGIN;
+					else if(MatchStr(sym, "end"))        ch = K_END;
+					else if(MatchStr(sym, "top"))        ch = K_TOP;
+					else if(MatchStr(sym, "bottom"))     ch = K_BOTTOM;
+					else if(MatchStr(sym, "newline"))    ch = K_CR;
+					else if(MatchStr(sym, "indent"))     ch = K_TAB;
+					else if(MatchStr(sym, "delright"))   ch = K_RDEL;
+					else if(MatchStr(sym, "delleft"))    ch = K_LDEL;
+					else if(MatchStr(sym, "cut"))        ch = K_CUT;
+					else if(MatchStr(sym, "copy"))       ch = K_COPY;
+					else if(MatchStr(sym, "paste"))      ch = K_PASTE;
+					else if(MatchStr(sym, "delete"))     ch = K_DELETE;
+					else if(MatchStr(sym, "clearclip"))  ch = K_CLRCLP;
+
+#if OPT_BLOCK
+					else if(MatchStr(sym, "blockstart")) ch = K_BLK_START;
+					else if(MatchStr(sym, "blockend"))   ch = K_BLK_END;
+#endif
+
+					if(ch)
+					{
+						while(n--)
+						{
+							if(ForceCh(ch))
+								break;
+						}
+
+						return;
+					}
+
+					/* Special commands */
+					if(MatchStr(sym, "filename"))
+					{
+						while(n--)
+							ForceStr(CurrentFile());
+
+						return;
+					}
 				}
 			}
 		}
