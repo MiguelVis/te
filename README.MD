@@ -400,6 +400,8 @@ Current CP/M adaptations are:
 - `te_px8`  : Epson PX-8 "Geneva".
 - `te_ansi` : Generic 25x80 ANSI terminal, including (translated) keyboard
               escape sequences.
+- `te_apple`: Apple II with SoftCard, a	24x80 SOROC IQ 120 / 140 terminal
+              and WordStar keys.
 
 Adaptations for other OS are (they are not distributed yet):
 - Windows 32 bit (25x80), compiled with Pelles C

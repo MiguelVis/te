@@ -1,0 +1,59 @@
+# ========================================
+# Default TE configuration for:
+#                                 APPLE II
+#                               & SOFTCARD
+#                 & SOROC IQ 120 / 140 CRT
+#                          & WORDSTAR KEYS
+# ========================================
+te.confName = "Apple II & Soroc & WordStar kb."
+
+screen.rows = 24
+screen.columns = 80
+
+screen.rulerChar = .
+screen.rulerTabChar = !
+screen.vertChar = |
+screen.horizChar = -
+screen.lineNumbersChar = |
+
+editor.maxLines = 512
+editor.tabSize = 4
+editor.lineNumbers = true
+editor.c_language = true
+editor.autoIndent = true
+editor.autoList = true
+editor.listBullets = "-*>"
+
+keyname.newLine = RETURN
+keyname.escape = ESC
+
+key.up = ^E
+key.down = ^X
+key.left = ^S
+key.right = ^D
+key.begin = ^QS
+key.end = ^QD
+key.top = ^QR
+key.bottom = ^QC
+key.pgUp = ^C
+key.pgDown = ^R
+key.indent = ^I
+key.newLine = ^M
+key.escape = ^[
+key.delRight = ^G
+key.delLeft = ^H
+key.cut = ^Y
+key.copy = ^O
+key.paste = ^W
+key.delete = ^KY
+key.clearClip = ^T
+key.find = ^QF
+key.findNext = ^L
+key.goLine = ^J
+key.wordLeft = ^A
+key.wordRight = ^F
+key.blockStart = ^KB
+key.blockEnd = ^KK
+key.blockUnset = ^KU
+key.macro = ^QM
+
