@@ -79,6 +79,7 @@
 	01 Jul 2021 : Check if macro is running to avoid auto-indentation and lists side effects.
 	06 Jul 2021 : Optimize LoopCr(), LoopLeftDel(), LoopRightDel() a bit.
 	25 Sep 2021 : Add editln variable. Use SysLineEdit() when editing.
+	01 Nov 2021 : Added macro raw mode.
 
 	Notes:
 
@@ -187,6 +188,7 @@ char find_str[FIND_MAX];
 */
 FILE *mac_fp;  /* FP for a file macro, or NULL */
 /*char *mac_str;*/ /* Address for a string macro, or NULL */
+int mac_raw;   /* NZ for raw mode */
 
 #endif
 
@@ -1250,7 +1252,7 @@ LoopMacro()
 			}
 		}
 	
-		MacroRunFile(fn);
+		MacroRunFile(fn, 0);
 	}
 }
 

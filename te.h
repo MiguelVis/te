@@ -64,6 +64,7 @@
 	05 Jul 2021 : Added OPT_Z80.
 	06 Jul 2021 : Added MAC_SYM_SIZ. Remove MAX_LINES.
 	25 Sep 2021 : v1.71
+	01 Nov 2021 : v1.72
 
 	Notes:
 
@@ -73,7 +74,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.71 / 25 Sep 2021 for CP/M"
+#define VERSION "v1.72 / 01 Nov 2021 for CP/M"
 
 /* Copyright
    ---------

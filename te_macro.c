@@ -30,18 +30,29 @@
 	01 Jul 2021 : Change macro symbol names to match key bindings names.
 	06 Jul 2021 : Optimize MacroGet() a bit.
 	25 Sep 2021 : Added MacroIsCmdChar(). Allow comments as {# comment}. Send '\0' from MacroStop().
+	01 Nov 2021 : Modified MacroRunFile() to set raw mode and return success / error flag.
+	              Modified MacroGetRaw() and MacroGet() to support raw mode.
+				  Check in MacroGetRaw() for illegal characters.
 */
 
 /* Run a macro from file
    ---------------------
+   Returns NZ on error.
 */
-MacroRunFile(fname)
+MacroRunFile(fname, raw)
 char *fname;
+int raw;
 {
 	if(!(mac_fp = fopen(fname, "r")))
 	{
 		ErrLineOpen();
+		
+		return -1;
 	}
+	
+	mac_raw = raw;
+	
+	return 0;
 }
 
 /* Run a macro from string
@@ -88,11 +99,30 @@ MacroGetRaw()
 
 	if(mac_fp)
 	{
-		while((ch = fgetc(mac_fp)) == '\n')
-			;
+		if(mac_raw)
+		{
+			/* Raw mode - translate some control chars. */
+			switch(ch = fgetc(mac_fp))
+			{
+				case '\n' : ch = K_CR; break;
+				case '\t' : ch = ' '; break;
+			}
+		}
+		else
+		{
+			/* Normal mode: ignore new-lines */
+			while((ch = fgetc(mac_fp)) == '\n')
+				;
+		}
 
 		if(ch != EOF)
 		{
+			/* Translate control chars. */
+			if(ch < 32 || ch == 127)
+			{
+				ch = '?';
+			}
+			
 			return ch;
 		}
 
@@ -134,6 +164,14 @@ MacroGet()
 	/* Continue if there is a character available */
 	if((ch = MacroGetRaw()))
 	{
+		/* Return character if raw mode */
+		if(mac_raw)
+		{
+			ForceCh(ch);
+			
+			return;
+		}
+		
 		/* Return character if it's not the start of a symbol */
 		if(ch != MAC_START)
 		{

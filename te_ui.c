@@ -41,6 +41,7 @@
 	08 Apr 2021 : Get adaptation (port) name from configuration.
 	05 Jul 2021 : Support for OPT_Z80.
 	25 Sep 2021 : Added SysLineEdit(). Fix URLs.
+	01 Nov 2021 : Added menu option when macros are enabled: insert file.
 */
 
 /* Read character from keyboard
@@ -600,12 +601,20 @@ Menu()
 			CenterText(row++, "Open");
 			CenterText(row++, "Save");
 			CenterText(row++, "save As");
+#if OPT_MACRO
+			CenterText(row++, "Insert");
+#endif			
 			CenterText(row++, "Help");
 			CenterText(row++, "aBout te");
 			CenterText(row  , "eXit te");
 #else
+#if OPT_MACRO
+			CenterText(row++, "New     Open  Save      Save As");
+			CenterText(row++, "Insert  Help  aBout te  eXit te");
+#else
 			CenterText(row++, "New   Open      Save     Save As");
 			CenterText(row++, "Help  aBout te  eXit te         ");
+#endif			
 #endif
 			menu = 0;
 		}
@@ -629,6 +638,9 @@ Menu()
 			case 'O'   : run = MenuOpen(); break;
 			case 'S'   : run = MenuSave(); break;
 			case 'A'   : run = MenuSaveAs(); break;
+#if OPT_MACRO
+			case 'I'   : run = MenuInsert(); break;
+#endif
 			case 'B'   : MenuAbout(); menu = 1; break;
 			case 'H'   : MenuHelp(); menu = 1; break;
 			case 'X'   : run = stay = MenuExit(); break;
@@ -726,6 +738,28 @@ MenuSaveAs()
 
 	return 1;
 }
+
+#if OPT_MACRO
+
+/* Menu option: Insert
+   -------------------
+   Return Z to quit the menu.
+*/
+MenuInsert()
+{
+	char fn[FILENAME_MAX];
+
+	fn[0] = 0;
+
+	if(SysLineFile(fn))
+	{
+		return MacroRunFile(fn, 1);
+	}
+
+	return 1;
+}
+
+#endif
 
 /* Menu option: Help
    -----------------
