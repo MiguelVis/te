@@ -1,7 +1,7 @@
 te
 ==
 
-v1.71 / 25 Sep 2021 for CP/M
+v1.72 / 01 Nov 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
@@ -143,6 +143,7 @@ New       - To start a new document
 Open      - To open a document
 Save      - To save the current document
 save As   - To save the current document under another filename.
+Insert    - To insert a text file into the current position.
 Help      - To show the help screen.
 aBout te  - To show some te information.
 eXit te   - To quit the program.
