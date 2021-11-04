@@ -584,6 +584,97 @@ editor.listBullets = "-*>"
 ```
 
 
+Text tool
+---------
+
+The text editor is supplied with `TETX` a text tool in order to help you to process
+text files.
+
+```
+TETX v1.00 / 04 Nov 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+
+TE text tool.
+
+Usage:
+        tetx [-options...] [fname...] [> fname]
+
+Options:
+        -e     Skip empty lines.
+        -l     Convert to lowercase.
+        -n     Print line numbers.
+        -t[N]  Convert tab to spaces (default = 4).
+        -u     Convert to uppercase.
+        -wN    Max. width of lines (32..255).
+
+Examples:
+        tetx -ne mydoc.txt
+        tetx -t4u -n letter1.txt letter2.txt > letters.txt
+```
+
+The `-n` option will print the line number before each line:
+
+```
+   25 This is a text line,
+   26 and this is another one.
+```
+
+The `-t` option will convert tab characters to spaces,
+there is a tab each N columns:
+
+```
++   +   +   +   +   +   +   +
+This line does not have a tab.
+	But this one has one.
+		And this one has two.
+A tab	here.
+```
+
+The `-w` option will split lines longer than N characters:
+
+```
+This is a line longer than 32 characters.
+```
+
+The command `tetx -w32` will process the line as:
+
+```
+This is a line longer than 32 ch
+aracters.
+```
+
+You can combine options as `-w32nu` or `-w32n -u`:
+
+```
+    1 THIS IS A TEXT WITH LINE N
+    2 UMBERS. IT HAS A MAXIMUM W
+    3 IDTH OF 32 CHARACTERS AND 
+    4 IT HAS BEEN CONVERTED TO U
+    5 PPERCASE.
+```
+
+The output is written to `stdout` (the console). So, you
+must use output redirection to a file, in order to save
+the result:
+
+```
+tetx -w32nu draft.txt > final.txt
+```
+
+You can omit the input filename, in order to read the input
+from `stdin` (the console):
+
+```
+tetx -w32nu > letter.txt
+```
+
+Or you can combine two or more files (`-` means `stdin`):
+
+```
+tetx -w32nu header.txt body.txt footer.txt > letter.txt
+tetx -w32nu header.txt - footer.txt > letter.txt
+```
+
+
 License
 -------
 
