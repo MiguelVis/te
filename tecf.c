@@ -48,6 +48,8 @@
 		09 Jun 2021 : Remove unused code. Min. screen height of 8 lines.
 		30 Jun 2021 : Added "auto" as legal value for screen.rows and screen.columns.
 		01 Jul 2021 : v1.20.
+		13 Nov 2021 : Added KEY action.
+		13 Nov 2021 : v1.21.
 
 	Notes:
 
@@ -90,7 +92,7 @@
    -------------
 */
 #define APP_NAME    "TECF"
-#define APP_VERSION "v1.20 / 01 Jul 2021"
+#define APP_VERSION "v1.21 / 13 Nov 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE configuration tool."
 #define APP_USAGE   "tecf action arguments..."
@@ -98,7 +100,9 @@
 #define APP_ACTION2 "\tpatch [[filename[.COM]] [filename[.CF]]]"
 #define APP_ACTION3 "dump CF values from COM file:"
 #define APP_ACTION4 "\tdump [filename[.COM]] [> filename.CF]"
-#define APP_ACTION5 "Default value for \"filename\" is \"TE\"."
+#define APP_ACTION5 "print key codes:"
+#define APP_ACTION6 "\tkey"
+#define APP_ACTION7 "Default value for \"filename\" is \"TE\"."
 
 #define CF_MAX_NAME    31
 #define CF_MIN_ROWS    8
@@ -111,6 +115,8 @@
 #define CF_MAX_TABSIZE 16
 #define CF_MAX_BULLETS 7
 #define CF_MAX_KEYNAME 7
+
+#define KEY_EXIT       ' '
 
 /* Globals
    -------
@@ -161,6 +167,13 @@ unsigned int argv[]; // char *argv[] - unsupported by MESCC (yet?)
 
 		do_dump(argc >= 3 ? argv[2] : def_name);
 	}
+	else if(!strcmp(argv[1], "KEY")) {
+		if(argc > 2) {
+			err_args();
+		}
+		
+		do_key();
+	}
 	else {
 		error("Unknown action");
 	}
@@ -203,6 +216,39 @@ char *com_arg;
 
 	// Dump configuration
 	dump_cf();
+}
+
+/* Action KEY
+   ----------
+*/
+do_key()
+{
+	int ch;
+	
+	banner();
+	
+	printf("Press any key to get its code/s (SPACE = exit):\n\n");
+	printf("Hex Dec Ctl Chr\n");
+	printf("--- --- --- ---\n");
+	
+	while((ch = getch()) != ' ') {
+		printf("%02x  %-3d ", ch, ch);
+		
+		if((ch >= 0 && ch <= 31) || ch == 127) {
+			putchar('^'); putchar(ch != 127 ? ch + '@' : '?');
+		}
+		else {
+			printf("  ");
+		}
+		
+		printf("  ");
+		
+		if(ch >= 32 && ch <= 126) {
+			putchar(ch);
+		}
+		
+		putchar('\n');
+	}
 }
 
 /* Get filename, adding filetype if missing
@@ -907,22 +953,35 @@ int key;
 	}
 }
 
+/* Show banner
+   -----------
+*/
+banner()
+{
+	fprintf(stderr, "%s %s - %s\n\n", APP_NAME, APP_VERSION, APP_COPYRGT);
+	fprintf(stderr, "%s\n\n", APP_INFO);
+}
+ 
+ 
 /* Show usage and exit
    -------------------
 */
 usage()
 {
-	fprintf(stderr, "%s %s - %s\n\n", APP_NAME, APP_VERSION, APP_COPYRGT);
-	fprintf(stderr, "%s\n\n", APP_INFO);
+
+	banner();
+	
 	fprintf(stderr, "Usage:\n\t%s\n\n", APP_USAGE);
 	fprintf(
 		stderr,
-		"Actions:\n\t%s\n\t%s\n\t%s\n\t%s\n\n\t%s\n",
+		"Actions:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n",
 		APP_ACTION1,
 		APP_ACTION2,
 		APP_ACTION3,
 		APP_ACTION4,
-		APP_ACTION5
+		APP_ACTION5,
+		APP_ACTION6,
+		APP_ACTION7
 	);
 
 	exit(0);

@@ -421,7 +421,7 @@ some `TE` generic options to your taste, if needed (its use
 is totally optional):
 
 ```
-TECF v1.20 / 01 Jul 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+TECF v1.21 / 13 Nov 2021 - (c) 2021 Miguel Garcia / FloppySoftware
 
 TE configuration tool.
 
@@ -433,8 +433,8 @@ Actions:
                 patch [[filename[.COM]] [filename[.CF]]]
         dump CF values from COM file:
                 dump [filename[.COM]] [> filename.CF]
-
-        Default value for "filename" is "TE".
+        print key codes:
+                key
 ```
 
 You can configure TE by using the `patch` action - ie:
@@ -468,6 +468,33 @@ tecf dump > myconf.cf
 ```
 
 The standard file type (`COM`) and filename (`TE`) are optionals.
+
+If you don't know the character/s assigned to a key, the `key` action
+will help you:
+
+```
+tecf key
+```
+
+For example:
+
+```
+TECF v1.21 / 13 Nov 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+
+TE configuration tool.
+
+Press any key to get its code/s (SPACE = exit):
+
+Hex Dec Ctl Chr
+--- --- --- ---
+61  97      a
+04  4   ^D
+0D  13  ^M
+08  8   ^H
+E0  224
+53  83      S
+0D  13  ^M
+```
 
 A `CF` configuration file is just a text file with some key / value
 pairs, in a very similar way of `INI` and `conf` files in other
@@ -648,7 +675,7 @@ You can combine options as `-w32nu` or `-w32n -u`:
 ```
     1 THIS IS A TEXT WITH LINE N
     2 UMBERS. IT HAS A MAXIMUM W
-    3 IDTH OF 32 CHARACTERS AND 
+    3 IDTH OF 32 CHARACTERS AND
     4 IT HAS BEEN CONVERTED TO U
     5 PPERCASE.
 ```
