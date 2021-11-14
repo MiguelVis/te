@@ -404,6 +404,7 @@ Current CP/M adaptations are:
 - `te_apple`: Apple II with SoftCard, a	24x80 SOROC IQ 120 / 140 terminal
               and WordStar keys.
 - `te_c128` : Commodore 128 and CP/M Plus (25x80 ADM-31/3A like terminal).
+- `te_sam`  : SAM Coupe and Pro-Dos (24x80 VT52 like terminal).
 
 Adaptations for other OS are (they are not distributed yet):
 - Windows 32 bit (25x80), compiled with Pelles C

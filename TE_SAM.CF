@@ -1,0 +1,57 @@
+# ========================================
+# Default TE configuration for:
+#                                SAM Coupe
+# ========================================
+te.confName = "SAM Coupe"
+
+screen.rows = 24
+screen.columns = 80
+
+screen.rulerChar = .
+screen.rulerTabChar = !
+screen.vertChar = |
+screen.horizChar = -
+screen.lineNumbersChar = |
+
+editor.maxLines = 512
+editor.tabSize = 4
+editor.lineNumbers = true
+editor.c_language = true
+editor.autoIndent = true
+editor.autoList = true
+editor.listBullets = "-*>"
+
+keyname.newLine = RETURN
+keyname.escape = ESC
+
+key.up = ^_
+key.down = ^^
+key.left = ^\
+key.right = ^]
+
+key.begin = ^Q
+key.end = ^E
+key.top = ^W
+key.bottom = ^Z
+key.pgUp = ^R
+key.pgDown = ^C
+key.indent = ^I
+key.newLine = ^M
+key.escape = ^[
+key.delRight = ^H
+key.delLeft = ^?
+key.cut = ^U
+key.copy = ^O
+key.paste = ^P
+key.delete = ^D
+key.clearClip = ^T
+key.find = ^K
+key.findNext = ^L
+key.goLine = ^J
+#key.wordLeft = ""
+#key.wordRight = ""
+key.blockStart = ^BS
+key.blockEnd = ^BE
+key.blockUnset = ^BU
+key.macro = ^Y
+

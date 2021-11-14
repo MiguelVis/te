@@ -9,3 +9,4 @@ call make te_ansi
 call make te_px8
 call make te_apple
 call make te_c128
+call make te_sam
