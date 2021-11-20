@@ -649,7 +649,7 @@ The text editor is supplied with `TETX` a text tool in order to help you to proc
 text files.
 
 ```
-TETX v1.00 / 04 Nov 2021 - (c) 2021 Miguel Garcia / FloppySoftware
+TETX v1.01 / 20 Nov 2021 - (c) 2021 Miguel Garcia / FloppySoftware
 
 TE text tool.
 
@@ -663,6 +663,7 @@ Options:
         -t[N]  Convert tab to spaces (default = 4).
         -u     Convert to uppercase.
         -wN    Max. width of lines (32..255).
+        -s     Trim spaces on the right.
 
 Examples:
         tetx -ne mydoc.txt

@@ -38,6 +38,9 @@
 	Revisions:
 
 		03 Nov 2021 : Start.
+		04 Nov 2021 : v1.00.
+		20 Nov 2021 : Refactorized in order to read full lines. Add -S option.
+		20 Nov 2021 : v1.01.
 
 	Notes:
 
@@ -49,6 +52,7 @@
 */
 #define CC_STDIO      /* Support for stdin, stdout, stderr */
 #define CC_REDIR      /* Support for command line redirection - needs CC_STDIO */
+#define CC_FGETS      /* Include fgets() */
 
 #include <mescc.h>
 #include <ctype.h>
@@ -62,7 +66,7 @@
    -------------
 */
 #define APP_NAME    "TETX"
-#define APP_VERSION "v1.00 / 04 Nov 2021"
+#define APP_VERSION "v1.01 / 20 Nov 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE text tool."
 #define APP_USAGE   "tetx [-options...] [fname...] [> fname]"
@@ -72,6 +76,7 @@
 #define APP_OPT_T   "-t[N]  Convert tab to spaces (default = 4)."
 #define APP_OPT_U   "-u     Convert to uppercase."
 #define APP_OPT_W   "-wN    Max. width of lines (32..255)."
+#define APP_OPT_S   "-s     Trim spaces on the right."
 #define APP_EX_1    "tetx -ne mydoc.txt"
 #define APP_EX_2    "tetx -t4u -n letter1.txt letter2.txt > letters.txt"
 
@@ -82,6 +87,8 @@
 #define WIDTH_MIN   32  /* Minimum width of lines */
 #define WIDTH_MAX   255 /* Maximum width of lines */
 
+#define BUF_SIZE    257 /* WIDTH_MAX + \n + \0 */
+
 /* Options flags
    -------------
 */
@@ -91,6 +98,7 @@
 #define FLAG_T 8  /* Convert tab to spaces */
 #define FLAG_U 16 /* Convert to uppercase */
 #define FLAG_W 32 /* Max. width of lines */
+#define FLAG_S 64 /* Trim spaces on the right */
 
 /* Globals
    -------
@@ -100,6 +108,7 @@ int line;
 int tab_spaces;
 int width;
 int col;
+char buf[BUF_SIZE];
 
 /* Program entry
    -------------
@@ -166,6 +175,7 @@ unsigned int argv[]; // char *argv[] - unsupported by MESCC (yet?)
 						}
 
 						break;
+					case 'S' : flags |= FLAG_S; break;
 					default  : error("Unknown option");
 				}
 			}
@@ -197,7 +207,7 @@ tx_file(fn)
 char *fn;
 {
 	FILE *fp;
-	int ch;
+	int len;
 
 	/* Open */
 	if(*fn == '-' && !fn[1]) {
@@ -207,12 +217,23 @@ char *fn;
 		error_fname(fn);
 	}
 
-	/* Defaults */
-	col = 0;
+	/* Process lines */
+	for(;;) {
+		if(!fgets(buf, BUF_SIZE, fp)) {
+			break;
+		}
 
-	/* Process characters and output result */
-	while((ch = fgetc(fp)) != EOF) {
-		tx_out(ch);
+		len = strlen(buf);
+
+		if(buf[len - 1] == '\n') {
+			buf[--len] = '\0';
+		}
+		else if(len > WIDTH_MAX)
+		{
+			error("Line too long");
+		}
+
+		tx_line(len);
 	}
 
 	/* Close */
@@ -222,6 +243,50 @@ char *fn;
 
 	/* Success */
 	return 0;
+}
+
+/* Process line
+   ------------
+*/
+tx_line(len)
+int len;
+{
+	int i;
+
+	/* Setup */
+	col = 0;
+
+	/* Trim spaces on the right ? */
+	if(flags & FLAG_S) {
+		while(len) {
+			if(buf[len - 1] != ' ') {
+				break;
+			}
+
+			buf[--len] = '\0';
+		}
+	}
+
+	/* Lowercase ? */
+	if(flags & FLAG_L) {
+		for(i = 0; i < len; ++i) {
+			buf[i] = tolower(buf[i]);
+		}
+	}
+
+	/* Uppercase ? */
+	if(flags & FLAG_U) {
+		for(i = 0; i < len; ++i) {
+			buf[i] = toupper(buf[i]);
+		}
+	}
+
+	/* Process characters */
+	for(i = 0; i < len; ++i) {
+		tx_out(buf[i]);
+	}
+
+	tx_out('\n');
 }
 
 /* Process character and output result
@@ -290,16 +355,6 @@ int ch;
 		}
 	}
 
-	/* Lowercase ? */
-	if(flags & FLAG_L) {
-		ch = tolower(ch);
-	}
-
-	/* Uppercase ? */
-	if(flags & FLAG_U) {
-		ch = toupper(ch);
-	}
-
 	/* Max. width ? */
 	if(flags & FLAG_W) {
 		if(col + 1 > width) {
@@ -327,13 +382,14 @@ usage()
 
 	fprintf(
 		stderr,
-		"Options:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\n",
+		"Options:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\n",
 		APP_OPT_E,
 		APP_OPT_L,
 		APP_OPT_N,
 		APP_OPT_T,
 		APP_OPT_U,
-		APP_OPT_W
+		APP_OPT_W,
+		APP_OPT_S
 	);
 
 	fprintf(stderr, "Examples:\n\t%s\n\t%s\n",
