@@ -33,6 +33,8 @@
 	01 Nov 2021 : Modified MacroRunFile() to set raw mode and return success / error flag.
 	              Modified MacroGetRaw() and MacroGet() to support raw mode.
 				  Check in MacroGetRaw() for illegal characters.
+	18 Nov 2021 : Added {AutoIndent}, {AutoList}.
+	20 Nov 2021 : Added MatchSym().
 */
 
 /* Run a macro from file
@@ -51,6 +53,12 @@ int raw;
 	}
 	
 	mac_raw = raw;
+	
+	/* Reset auto-indentation and auto-list */
+	mac_indent = cf_indent;
+	mac_list = cf_list;
+	
+	cf_indent = cf_list = 0;
 	
 	return 0;
 }
@@ -85,6 +93,10 @@ MacroStop()
 	}
 
 	mac_fp = /*mac_str =*/ NULL;
+	
+	/* Restore auto-indentation and auto-list */
+	cf_indent = mac_indent;
+	cf_list = mac_list;
 
 	/* Flag end of input */
 	ForceCh('\0');
@@ -150,7 +162,16 @@ MacroGetRaw()
 MacroIsCmdChar(ch)
 char ch;
 {
-	return isalpha(ch) || ch == '#';
+	return isalpha(ch) || ch == '#' || ch == '+' || ch == '-';
+}
+
+/* Check if a string is a symbol
+   -----------------------------
+*/
+MatchSym(s)
+char *s;
+{
+	return MatchStr(mac_sym, s);
 }
 
 /* Process a macro input unit
@@ -159,7 +180,6 @@ char ch;
 MacroGet()
 {
 	int i, n, ch;
-	char sym[MAC_SYM_SIZ];
 
 	/* Continue if there is a character available */
 	if((ch = MacroGetRaw()))
@@ -201,13 +221,13 @@ MacroGet()
 		/* Get symbol name like {up} or {up:12} --> "up" */
 		for(i = 0; MacroIsCmdChar(ch = MacroGetRaw()) && i < MAC_SYM_MAX; ++i)
 		{
-			sym[i] = tolower(ch);
+			mac_sym[i] = tolower(ch);
 		}
 
 		if(i)
 		{
 			/* End of symbol name */
-			sym[i] = '\0';
+			mac_sym[i] = '\0';
 
 			/* Get # of repeats if any - ie: {up:12} --> 12 */
 			if(ch == MAC_SEP)
@@ -219,7 +239,7 @@ MacroGet()
 
 				if(n < 0 || n > FORCED_MAX)
 				{
-					n = 0;
+					n = -1;
 				}
 			}
 			else
@@ -227,12 +247,12 @@ MacroGet()
 				n = 1;
 			}
 
-			if(n)
+			if(n >= 0)
 			{
 				/* Check for comments */
 				if(ch == ' ')
 				{
-					if((MatchStr(sym, "#")))
+					if((MatchSym("#")))
 					{
 						while((ch = MacroGetRaw()))
 						{
@@ -252,27 +272,27 @@ MacroGet()
 					/* Do command action */
 					ch = 0;
 
-					if     (MatchStr(sym, "up"))         ch = K_UP;
-					else if(MatchStr(sym, "down"))       ch = K_DOWN;
-					else if(MatchStr(sym, "left"))       ch = K_LEFT;
-					else if(MatchStr(sym, "right"))      ch = K_RIGHT;
-					else if(MatchStr(sym, "begin"))      ch = K_BEGIN;
-					else if(MatchStr(sym, "end"))        ch = K_END;
-					else if(MatchStr(sym, "top"))        ch = K_TOP;
-					else if(MatchStr(sym, "bottom"))     ch = K_BOTTOM;
-					else if(MatchStr(sym, "newline"))    ch = K_CR;
-					else if(MatchStr(sym, "indent"))     ch = K_TAB;
-					else if(MatchStr(sym, "delright"))   ch = K_RDEL;
-					else if(MatchStr(sym, "delleft"))    ch = K_LDEL;
-					else if(MatchStr(sym, "cut"))        ch = K_CUT;
-					else if(MatchStr(sym, "copy"))       ch = K_COPY;
-					else if(MatchStr(sym, "paste"))      ch = K_PASTE;
-					else if(MatchStr(sym, "delete"))     ch = K_DELETE;
-					else if(MatchStr(sym, "clearclip"))  ch = K_CLRCLP;
+					if     (MatchSym("up"))         ch = K_UP;
+					else if(MatchSym("down"))       ch = K_DOWN;
+					else if(MatchSym("left"))       ch = K_LEFT;
+					else if(MatchSym("right"))      ch = K_RIGHT;
+					else if(MatchSym("begin"))      ch = K_BEGIN;
+					else if(MatchSym("end"))        ch = K_END;
+					else if(MatchSym("top"))        ch = K_TOP;
+					else if(MatchSym("bottom"))     ch = K_BOTTOM;
+					else if(MatchSym("newline"))    ch = K_CR;
+					else if(MatchSym("indent"))     ch = K_TAB;
+					else if(MatchSym("delright"))   ch = K_RDEL;
+					else if(MatchSym("delleft"))    ch = K_LDEL;
+					else if(MatchSym("cut"))        ch = K_CUT;
+					else if(MatchSym("copy"))       ch = K_COPY;
+					else if(MatchSym("paste"))      ch = K_PASTE;
+					else if(MatchSym("delete"))     ch = K_DELETE;
+					else if(MatchSym("clearclip"))  ch = K_CLRCLP;
 
 #if OPT_BLOCK
-					else if(MatchStr(sym, "blockstart")) ch = K_BLK_START;
-					else if(MatchStr(sym, "blockend"))   ch = K_BLK_END;
+					else if(MatchSym("blockstart")) ch = K_BLK_START;
+					else if(MatchSym("blockend"))   ch = K_BLK_END;
 #endif
 
 					if(ch)
@@ -287,11 +307,25 @@ MacroGet()
 					}
 
 					/* Special commands */
-					if(MatchStr(sym, "filename"))
+					if(MatchSym("filename"))
 					{
 						while(n--)
 							ForceStr(CurrentFile());
 
+						return;
+					}
+					else if(MatchSym("autoindent")) {
+						cf_indent = (n ? 1 : 0);
+						
+						ForceCh('\0');
+						
+						return;
+					}
+					else if(MatchSym("autolist")) {
+						cf_list = (n ? 1 : 0);
+						
+						ForceCh('\0');
+						
 						return;
 					}
 				}

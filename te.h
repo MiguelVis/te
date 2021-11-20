@@ -74,7 +74,7 @@
 /* Version
    -------
 */
-#define VERSION "v1.72 / 01 Nov 2021 for CP/M"
+#define VERSION "v1.73 / 20 Nov 2021 for CP/M"
 
 /* Copyright
    ---------

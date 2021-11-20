@@ -80,6 +80,8 @@
 	06 Jul 2021 : Optimize LoopCr(), LoopLeftDel(), LoopRightDel() a bit.
 	25 Sep 2021 : Add editln variable. Use SysLineEdit() when editing.
 	01 Nov 2021 : Added macro raw mode.
+	18 Nov 2021 : Added mac_indent, mac_list for AutoIndent, AutoList macros.
+	20 Nov 2021 : Added mac_sym for macros.
 
 	Notes:
 
@@ -186,9 +188,12 @@ char find_str[FIND_MAX];
 /* Macros
    ------
 */
-FILE *mac_fp;  /* FP for a file macro, or NULL */
+FILE *mac_fp;              /* FP for a file macro, or NULL */
 /*char *mac_str;*/ /* Address for a string macro, or NULL */
-int mac_raw;   /* NZ for raw mode */
+int mac_raw;               /* NZ for raw mode */
+unsigned char mac_indent;  /* Value of cf_indent */
+unsigned char mac_list;    /* Value of cf_list */
+char mac_sym[MAC_SYM_SIZ]; /* Macro symbol */
 
 #endif
 
@@ -662,39 +667,30 @@ LoopCr()
 		
 		k = 0;
 		
-#if OPT_MACRO
-		if(!MacroRunning())
-		{
-#endif		
-
-			if(box_shc) {
-				
-				i = 0;
-				
-				if(cf_indent) {
-					while(ln_dat[i] == ' ') {
-						++i;
-					}
-				}
-
-				if(cf_list) {
-					if(strchr(cf_list_chr, ln_dat[i]) && ln_dat[i + 1] == ' ') {
-						i += 2;
-					}
-				}
-
-				if(i) {
-					k = i;
-					
-					strcpy(ln_dat + i, lp_arr[lp_cur]);
-
-					ModifyLine(lp_cur, ln_dat);
+		if(box_shc) {
+			
+			i = 0;
+			
+			if(cf_indent) {
+				while(ln_dat[i] == ' ') {
+					++i;
 				}
 			}
-		
-#if OPT_MACRO
+
+			if(cf_list) {
+				if(strchr(cf_list_chr, ln_dat[i]) && ln_dat[i + 1] == ' ') {
+					i += 2;
+				}
+			}
+
+			if(i) {
+				k = i;
+				
+				strcpy(ln_dat + i, lp_arr[lp_cur]);
+
+				ModifyLine(lp_cur, ln_dat);
+			}
 		}
-#endif			
 
 		if(box_shr < box_rows - 1) {
 
