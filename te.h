@@ -65,6 +65,7 @@
 	06 Jul 2021 : Added MAC_SYM_SIZ. Remove MAX_LINES.
 	25 Sep 2021 : v1.71
 	01 Nov 2021 : v1.72
+	20 Nov 2021 : v1.73
 
 	Notes:
 
