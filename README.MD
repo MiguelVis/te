@@ -1,7 +1,7 @@
 te
 ==
 
-v1.72 / 01 Nov 2021 for CP/M
+v1.73 / 20 Nov 2021 for CP/M
 
 (c) 2015-2021 Miguel Garcia / FloppySoftware
 
@@ -296,7 +296,8 @@ in every letter you write.
 Or, being a programmer, you could create a gdoc block macro to document
 your own C functions.
 
-Macros are not affected by auto-completion, auto-indentation or lists.
+Macros are not affected by default by auto-completion, auto-indentation
+or lists.
 
 Each time you want to run a macro, just press the corresponding key
 for the Macro action, enter the filename you choose when you saved it
@@ -322,19 +323,36 @@ There are some special symbols you can use in your macros:
 {NewLine}                      insert a break or empty line
 {Indent}                       insert spaces as indentation
 {DelLeft} {DelRight}           delete the character at the left / right
-{Cut} {Copy} {Paste} {Delete}  operation over a line or block of lines
+{Cut} {Copy} {Delete}          operation over a line or block of lines
+{Paste}                        paste the clipboard contents
 {ClearClip}                    clear the clipboard data
 {BlockStart} {BlockEnd}        mark the start / end of a block of lines
 {FileName}                     insert the current filename
+{AutoIndent}                   enable / disable automatic indentation
+{AutoList}                     enable / disable automatic list
 ```
 
 The symbol names are case insensitive - ie: `{ClearClip}` and `{clearclip}`
-are equivalents.
+are the same.
 
 Additionally, you can repeat a symbol as in:
 
 ```
 {up:12}
+```
+
+Auto indentation or auto list can be enabled by just using the symbol
+name or setting a repeat number of `1`:
+
+```
+{AutoList}
+{AutoList:1}
+```
+
+They can be disabled setting a repeat number of `0`:
+
+```
+{AutoIndent:0}
 ```
 
 Take into account that line endings in the macro are not translated
@@ -358,10 +376,21 @@ Some macro files are included as examples:
 
 ```
 HEADER.M     Above example.
-CFILE.M      C language file documentation block for GDOC.
-CFUN.M       C language function documentation block for GDOC.
 JOINUP.M     Join current line with the previous one.
 JOINDOWN.M   Join current line with the next one.
+```
+
+There are some macros for the C language:
+
+```
+CFILE.M      File documentation block for GDOC.
+CFUN.M       Function documentation block for GDOC.
+CDO.M        Snippet for "do / while".
+CFOR.M       Snippet for "for".
+CIF.M        Snippet for "if".
+CIFELSE.M    Snippet for "if / else".
+CSWITCH.M    Snippet for "switch".
+CWHILE.M     Snippet for "while".
 ```
 
 File backup
