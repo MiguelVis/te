@@ -41,6 +41,8 @@
 		04 Nov 2021 : v1.00.
 		20 Nov 2021 : Refactorized in order to read full lines. Add -S option.
 		20 Nov 2021 : v1.01.
+		25 Nov 2021 : Bugfix on error opening file.
+		25 Nov 2021 : v1.02.
 
 	Notes:
 
@@ -66,7 +68,7 @@
    -------------
 */
 #define APP_NAME    "TETX"
-#define APP_VERSION "v1.01 / 20 Nov 2021"
+#define APP_VERSION "v1.02 / 25 Nov 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE text tool."
 #define APP_USAGE   "tetx [-options...] [fname...] [> fname]"
@@ -214,7 +216,7 @@ char *fn;
 		fp = stdin;
 	}
 	else if((fp = fopen(fn, "r")) == NULL) {
-		error_fname(fn);
+		error_fname("Can't open", fn);
 	}
 
 	/* Process lines */
