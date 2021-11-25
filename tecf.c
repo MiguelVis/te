@@ -50,6 +50,8 @@
 		01 Jul 2021 : v1.20.
 		13 Nov 2021 : Added KEY action.
 		13 Nov 2021 : v1.21.
+		25 Nov 2021 : Modify CF_MIN_COLS to 51 to support Spectrum +3.
+		25 Nov 2021 : v1.22.
 
 	Notes:
 
@@ -92,7 +94,7 @@
    -------------
 */
 #define APP_NAME    "TECF"
-#define APP_VERSION "v1.21 / 13 Nov 2021"
+#define APP_VERSION "v1.22 / 25 Nov 2021"
 #define APP_COPYRGT "(c) 2021 Miguel Garcia / FloppySoftware"
 #define APP_INFO    "TE configuration tool."
 #define APP_USAGE   "tecf action arguments..."
@@ -107,7 +109,7 @@
 #define CF_MAX_NAME    31
 #define CF_MIN_ROWS    8
 #define CF_MAX_ROWS    255
-#define CF_MIN_COLS    64
+#define CF_MIN_COLS    51
 #define CF_MAX_COLS    255
 #define CF_MIN_LINES   64
 #define CF_MAX_LINES   4096
