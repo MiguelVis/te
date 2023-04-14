@@ -1,0 +1,56 @@
+# ========================================
+# Default TE configuration for:
+#                     Osborne Executive
+# ========================================
+te.confName = "Osborne Executive"
+
+screen.rows = 24
+screen.columns = 80
+
+screen.rulerChar = .
+screen.rulerTabChar = !
+screen.vertChar = |
+screen.horizChar = -
+screen.lineNumbersChar = |
+
+editor.maxLines = 512
+editor.tabSize = 4
+editor.lineNumbers = true
+editor.c_language = true
+editor.autoIndent = true
+editor.autoList = true
+editor.listBullets = "-*>"
+
+keyname.newLine = RETURN
+keyname.escape = ESC
+
+key.up = ^K
+key.down = ^J
+key.left = ^H
+key.right = ^L
+key.begin = ^V
+key.end = ^\
+key.top = ^P
+key.bottom = ^S
+key.pgUp = ^Q
+key.pgDown = ^Z
+key.indent = ^I
+key.newLine = ^M
+key.escape = ^[
+key.delRight = ^G
+key.delLeft = ^?
+key.cut = ^U
+key.copy = ^R
+key.paste = ^W
+key.delete = ^X
+key.clearClip = ^T
+key.find = ^F
+key.findNext = ^D
+key.goLine = ^A
+#key.wordLeft = ""
+#key.wordRight = ""
+key.blockStart = ^BS
+key.blockEnd = ^BE
+key.blockUnset = ^BU
+key.macro = ^Y
+
