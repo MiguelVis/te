@@ -38,6 +38,7 @@
 	11 May 2021 : Remove CRT configuration values.
 	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
 	06 Jul 2021 : Optimize CrtOut().
+	17 Jun 2023 : Add some delay in CrtInSt() to make real hardware happy.
 
 	Notes:
 
@@ -172,6 +173,16 @@ CrtIn()
 
 #asm
 CrtInSt:
+	ld hl, 32767
+
+CrtInSt0:
+	dec hl
+	
+	ld a,h
+	or l
+	
+	jr nz,CrtInSt0
+	
 	call BiosConst
 	ld h,0
 	ld l,a
