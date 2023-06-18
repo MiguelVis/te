@@ -39,6 +39,7 @@
 	30 Jun 2021 : Added CRT_DEF_ROWS, CRT_DEF_COLS.
 	06 Jul 2021 : Optimize CrtOut().
 	17 Jun 2023 : Add some delay in CrtInSt() to make real hardware happy.
+	18 Jun 2023 : Add input translations for PgUp and PgDn. Add alternate input translations for Begin and End (VT100).
 
 	Notes:
 
@@ -131,11 +132,21 @@ CrtOut:
 */
 CrtIn()
 {
-	int ch;
+	int ch, ex;
 
 	ch = CrtInEx();
 
-	/* Translate key codes begining with 0x1B (ESC) */
+	/* Translate key codes begining with 0x1B (ESC):
+	
+	   UP:    ESC [ A   --> ^E
+	   DOWN:  ESC [ B   --> ^X
+	   RIGHT: ESC [ C   --> ^D
+	   LEFT:  ESC [ D   --> ^S
+	   HOME:  ESC [ H   --> ^V
+	   END:   ESC [ F   --> ^A
+	   PGUP:  ESC [ 5 ~ --> ^R
+	   PGDN:  ESC [ 6 ~ --> ^C
+	*/
 
 	if(ch == 0x1B)
 	{
@@ -147,7 +158,7 @@ CrtIn()
 			{
 				if(CrtInSt())
 				{
-					switch(CrtInEx())
+					switch((ex = CrtInEx()))
 					{
 						case 'A' : /* UP */
 							return CTL_E;
@@ -161,9 +172,30 @@ CrtIn()
 							return CTL_V;
 						case 'F' : /* END */
 							return CTL_A;
+						case '5' : /* PGUP */
+						case '6' : /* PGDN */
+						case '7' : /* HOME */
+						case '8' : /* END */
+							if(CrtInSt())
+							{
+									if(CrtInEx() == '~') {
+										if(ex == 5) {
+											return CTL_R;
+										}
+										else if(ex == 6) {
+											return CTL_C;
+										}
+										else if(ex == 7) {
+											return CTL_V;
+										}
+										else {
+											return CTL_A;
+										}
+									}
+							}
+							break;
 					}
 				}
-
 			}
 		}
 	}
@@ -173,7 +205,7 @@ CrtIn()
 
 #asm
 CrtInSt:
-	ld hl, 32767
+	ld hl,8200
 
 CrtInSt0:
 	dec hl
