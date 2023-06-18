@@ -146,6 +146,8 @@ CrtIn()
 	   END:   ESC [ F   --> ^A
 	   PGUP:  ESC [ 5 ~ --> ^R
 	   PGDN:  ESC [ 6 ~ --> ^C
+	   HOME:  ESC [ 7 ~ --> ^V  (VT100)
+	   END:   ESC [ 8 ~ --> ^A  (VT100)
 	*/
 
 	if(ch == 0x1B)
