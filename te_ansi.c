@@ -181,13 +181,13 @@ CrtIn()
 							if(CrtInSt())
 							{
 									if(CrtInEx() == '~') {
-										if(ex == 5) {
+										if(ex == '5') {
 											return CTL_R;
 										}
-										else if(ex == 6) {
+										else if(ex == '6') {
 											return CTL_C;
 										}
-										else if(ex == 7) {
+										else if(ex == '7') {
 											return CTL_V;
 										}
 										else {
